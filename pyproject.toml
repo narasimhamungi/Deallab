@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "deallab"
+version = "0.1.0"
+description = "M&A transaction model: sources & uses, purchase accounting, synergies, pro-forma accretion/dilution and sponsor-style returns, with the accounting and economic verdicts kept structurally separate."
+requires-python = ">=3.10"
+dependencies = [
+    "valuationlab @ git+https://github.com/narasimhamungi/valuationlab.git",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "ruff>=0.4"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

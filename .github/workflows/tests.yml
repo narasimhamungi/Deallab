@@ -1,0 +1,23 @@
+name: tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install upstream at HEAD, not a pinned release
+        run: |
+          python -m pip install --upgrade pip
+          pip install git+https://github.com/narasimhamungi/trellis.git
+          pip install --no-deps git+https://github.com/narasimhamungi/valuationlab.git
+      - name: Install DealLab
+        run: pip install --no-deps -e . && pip install pytest ruff
+      - name: Tests
+        run: python -m pytest -q
+      - name: Lint
+        run: ruff check src tests scripts
