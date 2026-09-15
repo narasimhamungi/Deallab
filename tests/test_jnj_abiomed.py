@@ -81,15 +81,47 @@ def test_full_ev_reconciliation_now_runs_with_the_cvr_weight_assumed():
 
 
 def test_the_cvr_probability_weight_is_now_an_assumed_cited_estimate_not_blocking():
-    """Upgraded this pass from a blind unset value to a reasoned assumption -- still
-    ASSUMED (not SOURCED), and the citation says explicitly why it is circumstantial."""
+    """Upgraded across two passes from a blind unset value to a reasoned assumption
+    resting on two CONVERGENT independent triangulations -- still ASSUMED (not
+    SOURCED), and the citation says explicitly why it is circumstantial."""
     assert deal.CVR.probability_weight.basis is Basis.ASSUMED
     assert not deal.CVR.probability_weight.is_missing
-    assert deal.CVR.probability_weight.value == pytest.approx(0.495, abs=0.001)
-    assert "CIRCUMSTANTIAL, NOT CONFIRMED" in deal.CVR.probability_weight.citation
+    assert deal.CVR.probability_weight.value == pytest.approx(0.541, abs=0.001)
+    assert "STILL CIRCUMSTANTIAL, NOT CONFIRMED" in deal.CVR.probability_weight.citation
     # and it now actually unblocks the calculation it used to raise on:
     fv = deal.TERMS.contingent_consideration_fair_value()
     assert fv > 0.0
+
+
+def test_cvr_weight_rests_on_two_independent_convergent_triangulations():
+    """The point estimate (0.541) is grounded in J&J's own FY2024 10-K attributing a
+    $17.7bn acquisition total explicitly to Abiomed; the earlier 0.495 estimate (from
+    an aggregate, not-Abiomed-specific rollforward) is retained as corroboration, not
+    silently discarded. Two independent disclosures landing within 5 points of each
+    other is real convergent evidence, even though neither states the CVR fair value
+    in so many words."""
+    citation = deal.CVR.probability_weight.citation
+    assert "0.541" in citation and "0.495" in citation
+    assert "PRIMARY basis" in citation and "CORROBORATING" in citation
+    assert "$17.7 billion" in deal.JNJ_10K_FY2024_ACQUISITION_TOTAL
+    assert "primarily included Abiomed" in deal.JNJ_10K_FY2024_ACQUISITION_TOTAL
+
+
+def test_revenue_restatement_question_is_resolved_with_two_primary_sources():
+    """A prior pass left open whether Trellis's historical J&J revenue reflects the
+    originally-filed consolidated total or an already-restated continuing-operations
+    figure. Confirmed as the latter, with J&J's own FY2023 10-K stating the recast
+    directly -- and confirmed as the RIGHT basis for this model, not a problem."""
+    note = deal.JNJ_CONTINUING_OPERATIONS_RESTATEMENT
+    assert "$94,943mm" in note  # the original, as-filed consolidated total
+    assert "recast for ALL PERIODS to reflect the continuing operations" in note
+    assert "RESOLVES an open question" in note
+
+
+def test_base_year_rationale_cites_the_resolved_restatement_not_just_the_open_question():
+    assert "RESOLVED, not merely assumed" in deal.BUYER_FORECAST_BASE_YEAR_RATIONALE
+    assert ("JNJ_CONTINUING_OPERATIONS_RESTATEMENT"
+            in deal.BUYER_FORECAST_BASE_YEAR_RATIONALE)
 
 
 def test_deferred_tax_liability_is_sourced_directly_and_unambiguously():

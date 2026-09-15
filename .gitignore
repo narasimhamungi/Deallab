@@ -8,4 +8,3 @@ build/
 dist/
 .ruff_cache/
 data/
-data/

@@ -131,7 +131,7 @@ inputs are collected. It says so on screen; nothing in it refers to a real trans
 ## Tests
 
 ```bash
-python -m pytest -q        # 173 tests
+python -m pytest -q        # 176 tests
 ```
 
 `tests/test_bridge.py` runs against the real installed ValuationLab and Trellis, not

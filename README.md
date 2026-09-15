@@ -9,19 +9,22 @@ on [Trellis](https://github.com/narasimhamungi/trellis). DealLab consumes Valuat
 an installed package: fundamentals are ingested from SEC EDGAR XBRL once, through one
 pipeline, and each layer inherits that provenance rather than re-sourcing it.
 
-**Status:** engine complete and tested (173 tests). The J&J/Abiomed deal file is sourced
+**Status:** engine complete and tested (176 tests). The J&J/Abiomed deal file is sourced
 from the 8-Ks and 10-Ks on both sides of the deal — target fundamentals from Abiomed's
 own filings, J&J's own headline purchase price allocation (goodwill $11.1bn, amortizable
 intangibles $6.6bn, IPR&D $1.1bn, and a $1.8bn deferred tax liability explicitly
 attributed to this acquisition by name) from J&J's 10-K — and carries the disclosed EPS
-guidance the model will be checked against. The CVR's probability weight is now a cited,
-reasoned estimate rather than a blocking unknown, and the buyer-side forecast's two
-most contestable drivers (tax rate, revenue growth window) are now deliberate, cited
-decisions rather than whatever Trellis's defaults would have produced. Three items
-remain: the CVR's specific *booked* fair value (vs. the estimate now in use), J&J's
-actual financing mix, and one mechanical pipeline run (J&J's own Trellis forecast, with
-its methodology now resolved). The model refuses to run until they are collected, and
-names the filing that contains each one. See
+guidance the model will be checked against. The CVR's probability weight now rests on
+two independent, convergent triangulations (0.541 primary, 0.495 corroborating) rather
+than a blocking unknown, and the buyer-side forecast's driver decisions (tax rate,
+revenue growth window, and the base year itself) are deliberate, cited choices — with a
+prior open question (whether the historical revenue Trellis pulls already reflects the
+Kenvue continuing-operations restatement) now resolved with two primary sources, and
+confirmed to be the correct basis for this model. Two items remain open by design: the
+CVR's precise *booked* fair value (a further upgrade on the estimate now in use, not a
+blocker) and J&J's undisclosed financing mix (handled as a three-scenario sensitivity,
+since the information doesn't exist publicly to source). The buyer-side forecast is a
+mechanical pipeline run once `TRELLIS_USER_AGENT` and network access are available. See
 [Current state](#current-state).
 
 ---
@@ -125,7 +128,7 @@ value-destroying acquisition: successful in guidance, a goodwill impairment late
   `TypeError` if handed a list, because ValuationLab measured that pooling is wrong:
   J&J/Actelion at 12.3x EV/Revenue and BMS/Celgene at 4.8x sit in the same tier, 2.5x
   apart.
-- **Testing** — pytest, 173 tests. Expected values are computed by hand in the test and
+- **Testing** — pytest, 176 tests. Expected values are computed by hand in the test and
   compared, not snapshotted from the code's own output.
 
 ## Methodology
@@ -166,9 +169,31 @@ exists for, and most merger models do not have the module at all.
 
 ## Key findings
 
-Findings from the model **run** are pending the four remaining J&J-side inputs. What
-sourcing the target's own fundamentals already established:
+Findings from the model **run** are pending real forecast data. What sourcing and
+cross-checking the inputs already established:
 
+- **Two open questions closed with primary sources, in the same pass.** (1) The CVR's
+  fair value now rests on two independent, convergent triangulations rather than one:
+  J&J's FY2024 10-K explicitly attributes a $17.7bn "net of cash acquired" total to
+  Abiomed by name (calling the year's other acquisitions immaterial) — netted against
+  this file's own upfront-less-cash figure, that implies an $865mm CVR fair value
+  (weight 0.541), corroborated (not replaced) by the earlier 0.495 estimate drawn from
+  J&J's aggregate, not-Abiomed-specific contingent-consideration rollforward. Two
+  disclosures, independently arrived at, landing within 5 points of each other. (2)
+  Whether Trellis's historical J&J revenue reflects the originally-filed consolidated
+  total or an already-restated continuing-operations figure — confirmed as the latter,
+  with J&J's FY2023 10-K stating outright that "segment results have been recast for
+  all periods to reflect the continuing operations of the Company" following the
+  Kenvue separation. That is exactly the right basis for this model (Abiomed sits in
+  the surviving MedTech segment) — not a data-quality problem to route around.
+- **Improving the CVR evidence made one check slightly worse, and that's reported
+  plainly.** The tighter, better-triangulated 0.541 weight moves the full EV
+  reconciliation from a "ties" call (+1.9%, using the earlier 0.495 estimate) to a
+  "DIVERGES" one (+2.3%) against the file's own 2% threshold. The broad shape of the
+  original finding survives — the CVR-inclusive gap is still smaller than, and on the
+  opposite side of, the upfront-only gap — but a threshold call this tight flipping
+  when the underlying estimate improved is itself informative: the uncertainty here
+  hasn't shrunk to where a two-decimal-point cutoff means much on its own.
 - **A real, unresolved $470mm gap.** With Abiomed's actual sourced net cash ($1,004.2mm,
   30 Jun 2022, corroborated word-for-word by Abiomed's own press release: "no debt") and
   the actual disclosed share count (45.091184mm), upfront-only derived EV is $16,130mm
@@ -279,24 +304,29 @@ annual synergy the price requires versus the synergy anyone has actually identif
 Sourced and in the repo: consideration terms, CVR structure and all three milestones,
 stated EV, tender-derived share count, disclosed EPS guidance, integration structure.
 
-Sourced across three passes: target revenue, operating income, net income, effective
+Sourced across four passes: target revenue, operating income, net income, effective
 tax rate, net debt, and book equity from Abiomed's own FY2022 10-K and 30 June 2022
 10-Q (the correct pre-announcement balance sheet date — see Key findings); J&J's own
 headline goodwill, amortizable intangibles, IPR&D, pretax acquisition costs, and the
 Abiomed-specific deferred tax liability from J&J's 10-Ks. Total liabilities assumed is a
 *demonstrated* estimate (~$1,957mm), not a single disclosed line — the DTL plus
 Abiomed's own last-known operating liabilities, summed and tagged as a computation
-rather than a citation. The CVR's probability weight (0.495) is likewise a cited,
-circumstantial *estimate*, not a confirmed fair value — see its own citation for why.
+rather than a citation. The CVR's probability weight (0.541, corroborated by an earlier
+0.495 estimate) is likewise a cited, circumstantial *estimate* built from two
+independent triangulations, not a confirmed fair value — see its own citation for why.
 
-Outstanding — `python scripts/check_inputs.py` prints each with the filing that contains
-it:
+`MISSING` is down to one item — `python scripts/check_inputs.py` prints it with the
+filing that contains it:
 
 | Input | Source |
 |---|---|
-| CVR acquisition-date fair value (booked) | J&J FY2022 10-K, business combination footnote — distinct from both the $1.6bn undiscounted maximum and the 0.495 circumstantial weight already in use |
-| Financing mix | J&J FY2022 10-K, cash flow financing section and debt footnote |
-| Buyer standalone forward | Trellis run on CIK 200406 (pipeline run, not research) |
+| CVR acquisition-date fair value (booked, exact) | J&J FY2022 10-K, business combination footnote — would supersede the 0.541 triangulated estimate already in use, not required to run the model |
+
+Two items that will not close by finding a filing, handled by design instead of left
+as gaps: the financing mix (never disclosed — spanned across three scenarios in
+`scripts/run_jnj_abiomed.py`) and the buyer standalone forecast (not missing data, a
+mechanical pipeline run — `scripts/run_trellis_jnj.py`, needs `TRELLIS_USER_AGENT` and
+network access to SEC EDGAR).
 
 One figure still rests on a secondary source and is flagged as such in the code: the
 $252 unaffected share price. Needs confirming against a primary exchange/market-data
@@ -313,7 +343,7 @@ python scripts/check_inputs.py      # collection status for the real deal
 python scripts/run_trellis_jnj.py   # buyer forecast (needs TRELLIS_USER_AGENT + network)
 python scripts/run_jnj_abiomed.py   # THE REAL MODEL, across all financing scenarios
 python scripts/demo_mechanics.py    # end-to-end run on the synthetic fixture
-python -m pytest -q                 # 173 tests
+python -m pytest -q                 # 176 tests
 ```
 
 `demo_mechanics.py` runs on invented numbers and says so on every screen. It exists to
