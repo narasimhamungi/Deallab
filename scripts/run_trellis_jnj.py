@@ -19,6 +19,7 @@ conversion happens once, here, rather than being left for a script to get wrong 
 import dataclasses
 import json
 import sys
+from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -39,6 +40,7 @@ def main() -> int:
             fill_derived_gaps,
             run_all_checks,
         )
+        from trellis.statements import fiscal_year_key
     except ImportError as e:
         print(f"Trellis is not installed: {e}")
         print("pip install git+https://github.com/narasimhamungi/trellis.git")
@@ -88,11 +90,32 @@ def main() -> int:
         print(f"  HARD FAIL  {c.name}: {c.detail}")
     for c in soft_fails:
         print(f"  soft warn  {c.name}: {c.detail}")
+    # A hard failure that never stops anything is not a hard failure. This script
+    # previously printed "treat anything downstream as suspect" and continued, every
+    # run, on FY2006/FY2007 balance-sheet gaps two decades outside the window this
+    # model actually uses -- which trains the reader to scroll past the loudest signal
+    # the tool produces. So the failures are scoped: re-run the same checks over ONLY
+    # the years the drivers are derived from, and block on those.
+    window_start = deal.BUYER_FORECAST_BASE_YEAR - deal.BUYER_DRIVER_LOOKBACK_YEARS + 1
+    window = {y: v for y, v in built.table.items()
+              if window_start <= y <= deal.BUYER_FORECAST_BASE_YEAR}
+    blocking = [c for c in run_all_checks(window) if not c.passed and c.kind == "hard"]
+
+    if blocking:
+        print(f"\nCANNOT RUN: {len(blocking)} hard failure(s) inside the driver window "
+              f"FY{window_start}-FY{deal.BUYER_FORECAST_BASE_YEAR}. These are not "
+              f"historical curiosities -- the forecast is derived from exactly these "
+              f"years, so a structural break here propagates into every number "
+              f"downstream:")
+        for c in blocking:
+            print(f"  HARD FAIL  {c.name}: {c.detail}")
+        return 1
     if hard_fails:
-        print("\nHard failures mean the historical table has a real structural problem "
-              "(balance sheet doesn't balance, etc.) -- read these before forecasting "
-              "off this table. Continuing anyway so you can inspect the output, but "
-              "treat anything downstream as suspect until these are resolved.")
+        print(f"\n{len(hard_fails)} hard failure(s), all OUTSIDE the driver window "
+              f"FY{window_start}-FY{deal.BUYER_FORECAST_BASE_YEAR}. They are real gaps "
+              f"in the deep history and are reported rather than suppressed, but they "
+              f"do not touch the years this model derives from, so they do not block "
+              f"the run. A failure inside the window does.")
 
     large_soft = [c for c in soft_fails if c.diff is not None and abs(c.diff) > 5e9]
     if large_soft:
@@ -128,6 +151,58 @@ def main() -> int:
           f"would double-count the target). "
           f"Registry overrides: {profile.overrides or 'none'}")
     print(f"  Base-year rationale: {deal.BUYER_FORECAST_BASE_YEAR_RATIONALE[:240]}...")
+
+    # The base year is the single most load-bearing choice in this model, and it was
+    # silently wrong until Trellis commit 1b61d95. J&J's fiscal years end on the Sunday
+    # nearest 31 December, so FY2020-FY2022 all closed in early January; keying the
+    # table by the calendar year of period_end filed each of them one year late, and
+    # bucket "2022" actually held the period ending 2022-01-02 -- J&J's FY2021. The
+    # rationale below was carefully argued and the data underneath it was off by one,
+    # with nothing failing. Printing the actual period end is the cheapest way to make
+    # that class of error impossible to repeat: the label is an assertion, the date is
+    # evidence.
+    base_end = None
+    for o in obs.get("revenue", []):
+        if o.fiscal_period == "FY" and o.period_end and \
+                fiscal_year_key(o.period_end) == base_year:
+            base_end = max(base_end or o.period_end, o.period_end)
+    if base_end is None:
+        print("  ! Could not recover a period end for the base year -- the bucket "
+              "label cannot be verified against a filing date. Do not trust the "
+              "forecast until this is resolved.")
+        return 1
+
+    close = date.fromisoformat(deal.TERMS.closed)
+    stub_days = (date.fromisoformat(base_end) - close).days
+    print(f"  Base-year period END: {base_end} (verified from the filing, not inferred "
+          f"from the bucket label)")
+    # Two-sided, and the lower bound matters as much as the upper. The upper bound
+    # catches a base year that has swallowed the target. The LOWER bound catches the
+    # bug that actually happened: under the old keying, bucket 2022 held the period
+    # ending 2022-01-02 -- J&J's FY2021, a full fiscal year further from the deal than
+    # the rationale intended. A one-sided "is it pre-acquisition" test calls that
+    # perfectly fine, because it is pre-acquisition; it is just the WRONG pre-
+    # acquisition year. Anything closing more than roughly two quarters after the base
+    # year ended means a whole fiscal year is being skipped.
+    if stub_days < -200:
+        print(f"  ! Closed {-stub_days}d AFTER this fiscal year ended. That is roughly a "
+              f"full fiscal year of distance, not a stub: a year that should be in the "
+              f"base is being skipped, which is exactly what a mis-keyed table looks "
+              f"like. Verify the period end above against the filing before rerunning.")
+        return 1
+    if stub_days < 0:
+        print(f"  Closed {-stub_days}d AFTER this fiscal year ended -- the base year is "
+              f"entirely pre-acquisition, and close enough to the deal to be the right "
+              f"one.")
+    elif stub_days <= 45:
+        print(f"  Closed {stub_days}d before this fiscal year ended -- a {stub_days}-day "
+              f"stub of the target sits inside the base year. J&J called 2022's impact "
+              f"immaterial; at this size that holds.")
+    else:
+        print(f"  ! Closed {stub_days}d before this fiscal year ended. That is too much "
+              f"of the target inside a 'standalone' base year -- the forecast would "
+              f"partly double-count what the model then adds back.")
+        return 1
     drivers = derive_drivers_from_history(
         built.table, base_year=base_year,
         lookback_years=deal.BUYER_DRIVER_LOOKBACK_YEARS,
