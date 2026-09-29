@@ -1,0 +1,305 @@
+﻿==============================================================================
+J&J / ABIOMED -- FULL TRANSACTION MODEL
+==============================================================================
+
+1 input(s) still uncollected -- the model runs, but read these before trusting the output:
+  [cvr_acquisition_date_fair_value] NOT YET COLLECTED. J&J FY2022 10-K business combination footnote: the specific booked fair value of the CVR liability at acquisition, at the finest grain J&J di...
+
+Buyer forecast loaded: 5 years, FY79,597mm revenue in year 1
+
+==============================================================================
+DETAIL -- scenario: All cash on hand
+==============================================================================
+ASSUMPTIONS -- every number below is a choice, not evidence. The conclusion is only as good as these:
+  [cvr_probability_weight] = 0.541
+      0.541 = $865mm implied CVR fair value / $1,600mm undiscounted maximum. PRIMARY basis, per JNJ_10K_FY2024_ACQUISITION_TOTAL: J&J's own FY2024 10-K attributes a $17.7bn 'net of cash acquired' total explicitly to Abiomed (2022's only material acquisition); netting this file's own upfront-less-cash figure ($17,135mm - $300mm = $16,835mm) against it implies an $865mm CVR fair value. CORROBORATING (secondary) basis, per the earlier pass: 0.495 = $792mm/$1,600mm, from the 'Additions' line in J&J's AGGREGATE contingent-consideration rollforward across ALL acquisitions (sec.gov/Archives/edgar/data/200406/000020040624000013/jnj-20231231.htm) -- Beginning Balance $533mm (FY2021) -> Additions $792mm (FY2022) -> Ending Balance $1,120mm, not Abiomed-specific by name, attributed only by timing and magnitude.
+
+Both independent triangulations land within 5 points of each other (54.1% vs 49.5%) despite drawing on different disclosures -- convergent, not identical, evidence. The newer estimate is used as the point figure because its source sentence names Abiomed directly and calls the year's other acquisitions immaterial, which the older aggregate-rollforward evidence cannot claim. STILL CIRCUMSTANTIAL, NOT CONFIRMED: neither disclosure states 'the CVR liability was recognised at $X' in so many words: both are this file's own arithmetic run backward from a broader disclosed total. J&J's own acquisition-date fair value for the CVR liability specifically, stated at that grain, remains the SOURCED figure to find and would supersede this -- see `cvr_acquisition_date_fair_value` in MISSING.
+  [foregone_yield_on_cash] = 0.035
+      Short-dated yield J&J's marketable securities would have earned in late 2022 / 2023. Below the debt rate, as it should be for a short, high-quality portfolio.
+  [revenue_synergy_run_rate_mm] = 250
+      ~24% uplift on Abiomed's ~$1.03bn revenue base at full realisation. J&J's stated rationale was 'J&J's global scale and commercial and clinical strength' applied to Impella -- real, but unquantified by J&J. This is the analyst's number.
+  [revenue_synergy_margin] = 0.45
+      Incremental contribution margin on device revenue through an existing sales channel -- below Abiomed's ~80% gross margin, above a fully-loaded net margin.
+  [buyer_tax_rate_override] = 0.16
+      J&J's own GAAP effective tax rate, as Trellis derives it from net income, is driven far more by the items above than by underlying tax position -- the same volatility that distorts net margin distorts a net-income-denominator tax rate identically. J&J's own disclosed ADJUSTED effective tax rate is far more stable (15-17% across every quarter located): J&J's own disclosed ADJUSTED (non-GAAP) effective tax rate, from quarterly earnings-release exhibits (sec.gov/Archives/edgar/data/200406/...): Q1 2021 16.5%; Q1 2024 16.3%; Q1 2025 16.3%. Tight range despite GAAP effective tax rate swinging far wider across the same years (per this file's own Trellis-derived history: roughly 8%-17% year to year) -- consistent with J&J's own stated purpose for the adjusted figure, which explicitly excludes 'the effects of an acquisition, restructuring, litigation, and changes in applicable laws and regulations.' Only three quarterly data points located this pass, not a complete disclosed annual series -- reading a single go-forward rate off three Q1 prints is itself a choice, not a citation, which is why this stays tagged ASSUMED rather than SOURCED.. 0.16 is the midpoint of that range, not a single disclosed annual figure -- ASSUMED, not SOURCED, and correctly so. Applied via `dataclasses.replace()` on Trellis's own derived Drivers AFTER derivation, not through Trellis's `overrides` parameter: that mechanism only accepts interest_rate, debt_repayment, and revolver_limit (checked directly against trellis/forecast.py) -- it does not support overriding an income-statement ratio driver like tax_rate at all. A real limitation of Trellis's current override mechanism, worth a note upstream, not something to route around silently here.
+
+SOURCES
+--------------------------------------------------------
+  Buyer cash on hand                       $      16,430mm
+  Target cash acquired                     $       1,004mm
+  TOTAL SOURCES                            $      17,435mm
+
+USES
+--------------------------------------------------------
+  Upfront equity consideration             $      17,135mm
+  Advisory/legal fees (expensed)           $         300mm
+  TOTAL USES                               $      17,435mm
+
+  Check: BALANCES
+  CVR of $854mm (probability-weighted fair value, not maximum payout) is deliberately EXCLUDED from uses: under ASC 805 it is an acquisition-date liability, not cash out at close, so the buyer does not fund it on day one. It remains part of consideration transferred and therefore part of goodwill -- see the purchase price allocation, where it does appear.
+
+  Derived EV $16,984mm vs. stated $16,600mm: +384mm (+2.3%) -- DIVERGES. Derived EV includes contingent consideration at fair value ($854mm); a stated EV usually does not.
+  Upfront premium to unaffected price: +50.8% (excludes CVR -- a premium quoted inclusive of a contingent payout is a maximum, not a premium)
+
+PURCHASE PRICE ALLOCATION
+------------------------------------------------------------
+  Consideration transferred                  $      17,988mm
+  Less: target book equity                   $      -1,536mm
+  Less: identifiable intangibles at FV       $      -7,700mm
+  Plus: deferred tax liability on step-up    $       1,800mm
+  = Goodwill                                 $      10,552mm
+  Goodwill as % of consideration                    58.7%
+  ! DTL of $1,800mm taken from disclosure, not computed. This model's own statutory-rate calculation would have given $1,232mm, a $+568mm difference -- which flows straight into goodwill. The gap is the distance between a single-rate approximation and the real jurisdictional mix; where the disclosed figure exists it wins.
+  ! $1,100mm of indefinite-lived intangibles (IPR&D (unapproved Impella programs)) is recognised as an identifiable asset and reduces goodwill, but carries NO amortisation -- ASC 350-30. It creates no GAAP-vs-adjusted gap and no annual earnings drag, unlike the amortisable classes. It does sit inside the step-up on which the deferred tax liability is computed.
+
+PRO-FORMA NET INCOME BRIDGE -- year 1
+------------------------------------------------------------------------------
+  Buyer standalone net income                          $      16,862mm
+    Target net income contributed                      $         339mm
+  * Cost to achieve (after tax)                        $        -126mm
+    Foregone interest income on cash used (after tax)  $        -483mm
+  * Intangible amortisation from step-up (after tax)   $        -396mm
+  * Transaction costs expensed (after tax)             $        -252mm
+  = Pro-forma net income (GAAP)                        $      15,944mm
+  = Pro-forma net income (adjusted)                    $      16,718mm
+  * = excluded from adjusted earnings
+    - Cost to achieve (after tax): one-time integration/restructuring; excluded from adjusted by convention
+    - Foregone interest income on cash used (after tax): the charge most merger models omit entirely
+    - Intangible amortisation from step-up (after tax): non-cash; the single largest GAAP-vs-adjusted difference in most deals
+    - Transaction costs expensed (after tax): ASC 805: expensed as incurred, never capitalised into goodwill
+
+PRO-FORMA NET INCOME BRIDGE -- year 2
+------------------------------------------------------------------------------
+  Buyer standalone net income                          $      16,778mm
+    Target net income contributed                      $         392mm
+    Synergies realised (after tax)                     $          14mm
+  * Cost to achieve (after tax)                        $         -84mm
+    Foregone interest income on cash used (after tax)  $        -483mm
+  * Intangible amortisation from step-up (after tax)   $        -396mm
+  = Pro-forma net income (GAAP)                        $      16,221mm
+  = Pro-forma net income (adjusted)                    $      16,701mm
+  * = excluded from adjusted earnings
+    - Synergies realised (after tax): pre-tax $17mm at this year's phase-in
+    - Cost to achieve (after tax): one-time integration/restructuring; excluded from adjusted by convention
+    - Foregone interest income on cash used (after tax): the charge most merger models omit entirely
+    - Intangible amortisation from step-up (after tax): non-cash; the single largest GAAP-vs-adjusted difference in most deals
+
+PRO-FORMA NET INCOME BRIDGE -- year 3
+------------------------------------------------------------------------------
+  Buyer standalone net income                          $      16,694mm
+    Target net income contributed                      $         445mm
+    Synergies realised (after tax)                     $          38mm
+  * Cost to achieve (after tax)                        $         -42mm
+    Foregone interest income on cash used (after tax)  $        -483mm
+  * Intangible amortisation from step-up (after tax)   $        -396mm
+  = Pro-forma net income (GAAP)                        $      16,256mm
+  = Pro-forma net income (adjusted)                    $      16,694mm
+  * = excluded from adjusted earnings
+    - Synergies realised (after tax): pre-tax $45mm at this year's phase-in
+    - Cost to achieve (after tax): one-time integration/restructuring; excluded from adjusted by convention
+    - Foregone interest income on cash used (after tax): the charge most merger models omit entirely
+    - Intangible amortisation from step-up (after tax): non-cash; the single largest GAAP-vs-adjusted difference in most deals
+
+PRO-FORMA NET INCOME BRIDGE -- year 4
+------------------------------------------------------------------------------
+  Buyer standalone net income                          $      16,610mm
+    Target net income contributed                      $         496mm
+    Synergies realised (after tax)                     $          66mm
+    Foregone interest income on cash used (after tax)  $        -483mm
+  * Intangible amortisation from step-up (after tax)   $        -396mm
+  = Pro-forma net income (GAAP)                        $      16,294mm
+  = Pro-forma net income (adjusted)                    $      16,690mm
+  * = excluded from adjusted earnings
+    - Synergies realised (after tax): pre-tax $79mm at this year's phase-in
+    - Foregone interest income on cash used (after tax): the charge most merger models omit entirely
+    - Intangible amortisation from step-up (after tax): non-cash; the single largest GAAP-vs-adjusted difference in most deals
+
+PRO-FORMA NET INCOME BRIDGE -- year 5
+------------------------------------------------------------------------------
+  Buyer standalone net income                          $      16,527mm
+    Target net income contributed                      $         547mm
+    Synergies realised (after tax)                     $          94mm
+    Foregone interest income on cash used (after tax)  $        -483mm
+  * Intangible amortisation from step-up (after tax)   $        -396mm
+  = Pro-forma net income (GAAP)                        $      16,289mm
+  = Pro-forma net income (adjusted)                    $      16,685mm
+  * = excluded from adjusted earnings
+    - Synergies realised (after tax): pre-tax $112mm at this year's phase-in
+    - Foregone interest income on cash used (after tax): the charge most merger models omit entirely
+    - Intangible amortisation from step-up (after tax): non-cash; the single largest GAAP-vs-adjusted difference in most deals
+
+ACCRETION / DILUTION -- year 1
+--------------------------------------------------------------
+  Buyer standalone EPS                  $   6.321
+  Pro-forma EPS (adjusted)              $   6.267  -0.054  (-0.85%) -- broadly neutral
+  Pro-forma EPS (GAAP)                  $   5.977  -0.344  (-5.44%) -- dilutive
+  Purchase accounting gap               $   0.290 per share -- the whole distance between the two lines above
+
+  EPS impact by driver (adjusted basis):
+    Foregone interest income on cash used (after tax)    -0.1811
+    Target net income contributed                        +0.1271
+
+ACCRETION / DILUTION -- year 2
+--------------------------------------------------------------
+  Buyer standalone EPS                  $   6.290
+  Pro-forma EPS (adjusted)              $   6.261  -0.029  (-0.46%) -- broadly neutral
+  Pro-forma EPS (GAAP)                  $   6.081  -0.209  (-3.32%) -- dilutive
+  Purchase accounting gap               $   0.180 per share -- the whole distance between the two lines above
+
+  EPS impact by driver (adjusted basis):
+    Foregone interest income on cash used (after tax)    -0.1811
+    Target net income contributed                        +0.1471
+    Synergies realised (after tax)                       +0.0053
+
+ACCRETION / DILUTION -- year 3
+--------------------------------------------------------------
+  Buyer standalone EPS                  $   6.258
+  Pro-forma EPS (adjusted)              $   6.258  -0.000  (-0.00%) -- broadly neutral
+  Pro-forma EPS (GAAP)                  $   6.094  -0.164  (-2.63%) -- dilutive
+  Purchase accounting gap               $   0.164 per share -- the whole distance between the two lines above
+
+  EPS impact by driver (adjusted basis):
+    Foregone interest income on cash used (after tax)    -0.1811
+    Target net income contributed                        +0.1668
+    Synergies realised (after tax)                       +0.0142
+
+ACCRETION / DILUTION -- year 4
+--------------------------------------------------------------
+  Buyer standalone EPS                  $   6.227
+  Pro-forma EPS (adjusted)              $   6.257  +0.030  (+0.48%) -- broadly neutral
+  Pro-forma EPS (GAAP)                  $   6.108  -0.119  (-1.91%) -- dilutive
+  Purchase accounting gap               $   0.148 per share -- the whole distance between the two lines above
+
+  EPS impact by driver (adjusted basis):
+    Target net income contributed                        +0.1859
+    Foregone interest income on cash used (after tax)    -0.1811
+    Synergies realised (after tax)                       +0.0248
+
+ACCRETION / DILUTION -- year 5
+--------------------------------------------------------------
+  Buyer standalone EPS                  $   6.196
+  Pro-forma EPS (adjusted)              $   6.255  +0.059  (+0.96%) -- broadly neutral
+  Pro-forma EPS (GAAP)                  $   6.107  -0.089  (-1.44%) -- dilutive
+  Purchase accounting gap               $   0.148 per share -- the whole distance between the two lines above
+
+  EPS impact by driver (adjusted basis):
+    Target net income contributed                        +0.2050
+    Foregone interest income on cash used (after tax)    -0.1811
+    Synergies realised (after tax)                       +0.0354
+
+
+==============================================================================
+FINANCING SENSITIVITY -- the undisclosed input, spanned rather than guessed
+==============================================================================
+  Scenario                       Yr1 adj   Yr1 GAAP   Yr2 adj   Breakeven syn
+  All cash on hand               -0.85%     -5.44%    -0.46%            171mm
+  Half cash, half new debt       -1.26%     -5.85%    -0.87%            253mm
+  All new debt                   -1.67%     -6.26%    -1.28%            336mm
+
+  Year-1 adjusted accretion spread across the funding range: 0.82%
+  The verdict CHANGES across the funding range (['broadly neutral', 'dilutive']). The undisclosed mix is therefore load-bearing, and no single answer to 'is this accretive' is defensible without knowing it. Report the range.
+
+==============================================================================
+PPA CROSS-CHECK -- model's DERIVED goodwill vs. J&J's own DISCLOSED figure
+==============================================================================
+  Model-derived goodwill   $      10,552mm
+  J&J's disclosed goodwill $      11,100mm
+  Gap                      $        -548mm  (-4.9%)
+  This is a genuine independent check: goodwill here is a RESIDUAL the model
+  computes from consideration, book equity, the intangible step-up and the
+  DTL -- none of it read from J&J's own goodwill line. Landing close means
+  the consideration, share count, CVR weight and step-up all hang together.
+  Known reconciling items, both of which the model does NOT carry and which
+  push in OPPOSITE directions -- so the residual gap is a net, not a single
+  missing piece:
+   (a) ~$0.7bn of other identifiable assets (receivables, inventory, PP&E)
+       that J&J allocated but this model has no sourced figures for. Adding
+       them would push derived goodwill DOWN, widening the gap.
+   (b) liabilities assumed, which this model estimates at ~$1,957mm but does
+       not feed into the allocation. Adding them would push goodwill UP,
+       narrowing it.
+  Tracking this gap honestly is the point. An earlier version of this script
+  landed 2.4% away with a WORSE model (IPR&D dumped into goodwill, DTL
+  self-computed); tightening both inputs moved the answer further from J&J's
+  number, not closer. Proximity to a disclosed figure is not evidence of
+  correctness when the inputs behind it are known to be wrong.
+  ! DTL of $1,800mm taken from disclosure, not computed. This model's own statutory-rate calculation would have given $1,232mm, a $+568mm difference -- which flows straight into goodwill. The gap is the distance between a single-rate approximation and the real jurisdictional mix; where the disclosed figure exists it wins.
+  ! $1,100mm of indefinite-lived intangibles (IPR&D (unapproved Impella programs)) is recognised as an identifiable asset and reduces goodwill, but carries NO amortisation -- ASC 350-30. It creates no GAAP-vs-adjusted gap and no annual earnings drag, unlike the amortisable classes. It does sit inside the step-up on which the deferred tax liability is computed.
+
+==============================================================================
+ACQUISITION RETURNS (notional exit -- a strategic buyer does not exit; this exists to compare against the buyer's cost of capital)
+----------------------------------------------------------------------------
+  Entry equity outlay          $      17,988mm
+  Exit equity value (year 5)   $      27,380mm at 48.6x
+  MOIC                                  1.63x
+  IRR                                 10.45%
+  vs. hurdle 7.50%: CLEARS
+  ! Exit multiple set equal to entry -- the conservative convention. The return shown is operating performance and deleveraging only, with no credit for re-rating.
+
+==============================================================================
+ACCOUNTING LENS -- effect on reported EPS
+========================================================================
+  Year 1: adjusted -0.85% (broadly neutral), GAAP -5.44% (dilutive)
+  Year 2: adjusted -0.46% (broadly neutral), GAAP -3.32% (dilutive)
+  Year 3: adjusted -0.00% (broadly neutral), GAAP -2.63% (dilutive)
+  Year 4: adjusted +0.48% (broadly neutral), GAAP -1.91% (dilutive)
+  Year 5: adjusted +0.96% (broadly neutral), GAAP -1.44% (dilutive)
+  Never adjusted-accretive within the modelled horizon.
+
+  Breakeven synergy (adjusted, year 1): $171mm pre-tax required
+  The price requires $171mm of pre-tax synergy this year to hold EPS flat; $0mm is modelled. The $171mm difference is the part of the deal resting on benefits nobody has identified -- 12.2% of target revenue.
+
+  On an adjusted basis year one is broadly neutral at -0.85%; on GAAP it is dilutive at -5.44%. The 4.59% gap between them is purchase accounting -- non-cash, real to reported earnings, and excluded by the buyer's own adjusted definition. Neither figure says anything about whether the price was right; see the economic lens.
+
+ECONOMIC LENS -- did the buyer pay less than it is worth?
+========================================================================
+  Price paid (incl. contingent at FV)   $      17,988mm
+  Target standalone value               $      10,359mm
+    basis: Unaffected market EV: 45.09mm shares x $252.00 (last close before announcement) less $1,004mm net cash. This is the MARKET's standalone view, not an intrinsic valuation. ValuationLab is the better anchor and deallab.bridge.standalone_value is built to consume its Conclusion -- but running it needs an Abiomed peer set and DCF inputs that have not been collected, and inventing them to fill this slot would be worse than using a real market price. NOTE the unaffected price itself is still SECONDARY-sourced (see the deal file), so this anchor inherits that weakness.
+  Premium paid                          $       7,630mm
+  Less PV of identified synergies       $        -201mm
+  = UNEXPLAINED PREMIUM                 $       7,429mm (+41.3% of price)
+  Unexplained if revenue synergies fail $       7,853mm
+  IRR 10.45% vs. WACC 7.50%: +2.95% spread
+  ! Exit multiple set equal to entry -- the conservative convention. The return shown is operating performance and deleveraging only, with no credit for re-rating.
+
+  After crediting every identified synergy at present value ($201mm), $7,429mm of the price -- 41.3% -- is unaccounted for. That is the amount being paid for benefits that have not been articulated: option value on the pipeline, strategic positioning, or overpayment. All three look identical in a model; only the first two are defensible, and neither has been demonstrated here.
+
+LENS DISAGREEMENT
+========================================================================
+  Both lenses point the same way, against the deal. There is no tension to resolve and no reading under which this creates value as modelled.
+
+==============================================================================
+MODEL vs. DISCLOSED GUIDANCE
+========================================================================
+  Year 1 adjusted EPS -- All cash on hand [adjusted] -- WITHIN GUIDANCE
+    Guided:   Slightly dilutive to neutral to adjusted earnings per share in the first year, considering the impact of financing. J&J Form 8-K exhibit 99.1, 22 December 2022 (sec.gov/Archives/edgar/data/200406/000119312522311072/d428734dex991.htm)
+    Modelled: -0.85%
+    Gap:      +0.00% (+0bp)
+    The model reproduces disclosed guidance without being fitted to it. That is the check passing -- it does not make the assumptions correct, only mutually consistent with what management expected.
+
+  Year 1 adjusted EPS -- Half cash, half new debt [adjusted] -- OUTSIDE GUIDANCE
+    Guided:   Slightly dilutive to neutral to adjusted earnings per share in the first year, considering the impact of financing. J&J Form 8-K exhibit 99.1, 22 December 2022 (sec.gov/Archives/edgar/data/200406/000119312522311072/d428734dex991.htm)
+    Modelled: -1.26%
+    Gap:      -0.26% (-26bp)
+    The model is 0.26% worse than guidance (26bp). Do not tune an input to close this. Identify which assumption drives it -- most often the financing mix, the intangible amortisation life, or the synergy phase-in -- and state the disagreement. Management guidance is a forecast by an interested party; the model disagreeing with it is a hypothesis, not automatically an error.
+
+  Year 1 adjusted EPS -- All new debt [adjusted] -- OUTSIDE GUIDANCE
+    Guided:   Slightly dilutive to neutral to adjusted earnings per share in the first year, considering the impact of financing. J&J Form 8-K exhibit 99.1, 22 December 2022 (sec.gov/Archives/edgar/data/200406/000119312522311072/d428734dex991.htm)
+    Modelled: -1.67%
+    Gap:      -0.67% (-67bp)
+    The model is 0.67% worse than guidance (67bp). Do not tune an input to close this. Identify which assumption drives it -- most often the financing mix, the intangible amortisation life, or the synergy phase-in -- and state the disagreement. Management guidance is a forecast by an interested party; the model disagreeing with it is a hypothesis, not automatically an error.
+
+  A model that matches guidance on every line should be viewed with suspicion, not satisfaction -- it usually means an input was chosen to produce the match.
+
+==============================================================================
+NOTE ON WHAT THIS IS AND IS NOT
+==============================================================================
+  Sourced: deal terms, CVR structure, target fundamentals, J&J's own PPA,
+  the deferred tax liability, buyer share count, disclosed EPS guidance.
+  Analyst's own: synergy case (J&J quantified none), discount and debt
+  rates, Abiomed's forward growth (it stopped filing post-close), the CVR
+  probability weight, and the forecast driver window. Every one of those is
+  in the assumption register above -- the conclusion is only as good as they
+  are, and the financing spread shows how much one of them actually moves it.
