@@ -14,7 +14,7 @@ from the 8-Ks and 10-Ks on both sides of the deal — target fundamentals from A
 own filings, J&J's own headline purchase price allocation (goodwill $11.1bn, amortizable
 intangibles $6.6bn, IPR&D $1.1bn, and a $1.8bn deferred tax liability explicitly
 attributed to this acquisition by name) from J&J's 10-K — and carries the disclosed EPS
-guidance the model will be checked against. The CVR's probability weight now rests on
+guidance the model is checked against. The CVR's probability weight now rests on
 two independent, convergent triangulations (0.541 primary, 0.495 corroborating) rather
 than a blocking unknown, and the buyer-side forecast's driver decisions (tax rate,
 revenue growth window, and the base year itself) are deliberate, cited choices — with a
@@ -23,9 +23,9 @@ Kenvue continuing-operations restatement) now resolved with two primary sources,
 confirmed to be the correct basis for this model. Two items remain open by design: the
 CVR's precise *booked* fair value (a further upgrade on the estimate now in use, not a
 blocker) and J&J's undisclosed financing mix (handled as a three-scenario sensitivity,
-since the information doesn't exist publicly to source). The buyer-side forecast is a
-mechanical pipeline run once `TRELLIS_USER_AGENT` and network access are available. See
-[Current state](#current-state).
+since the information doesn't exist publicly to source). **The full model has been run on
+real data (29 Sep 2026)** — results under [Key findings](#key-findings), full output in
+[`docs/results/jnj_abiomed_run.txt`](docs/results/jnj_abiomed_run.txt).
 
 ---
 
@@ -172,8 +172,44 @@ exists for, and most merger models do not have the module at all.
 
 ## Key findings
 
-Findings from the model **run** are pending real forecast data. What sourcing and
-cross-checking the inputs already established:
+**From the real run** — full output in
+[`docs/results/jnj_abiomed_run.txt`](docs/results/jnj_abiomed_run.txt), produced by
+`scripts/run_trellis_jnj.py` then `scripts/run_jnj_abiomed.py` (29 Sep 2026):
+
+- **Year-one adjusted EPS lands inside J&J's guidance only if the deal was paid in cash.**
+  J&J guided "slightly dilutive to neutral". All cash on hand: **−0.85%**, inside the
+  guided range; half cash / half debt: −1.26% (26bp outside); all debt: −1.67% (67bp
+  outside). The spread across the funding range is 0.82pp and the verdict changes with it
+  (broadly neutral → dilutive), so the undisclosed financing mix is load-bearing. No input
+  was tuned to the all-cash match.
+- **Never adjusted-accretive in the five-year horizon.** All cash: −0.85%, −0.46%, −0.00%,
+  +0.48%, +0.96% — every year inside the "broadly neutral" band. GAAP is dilutive every
+  year (−5.44% in year one); the 4.59pp gap between the two is purchase accounting. J&J
+  also said the deal would be accretive by about $0.05 in 2024. **The model does not
+  reproduce that**: year two (2024) is −0.46% adjusted. The guidance check currently tests
+  year one only.
+- **$7.4bn of the price is unexplained.** Price paid $17,988mm (CVR at fair value) against
+  an unaffected market EV of $10,359mm is a $7,630mm premium; identified synergies are
+  worth $201mm at present value, leaving **$7,429mm — 41.3% of the price** — paid for
+  benefits nobody has articulated ($7,853mm if the revenue synergies fail). Holding
+  year-one adjusted EPS flat would need $171mm of pre-tax synergy (all cash; $253mm half
+  debt, $336mm all debt), against $0 modelled in year one.
+- **Both lenses point against the deal as modelled.** The notional return does clear the
+  7.50% hurdle — MOIC 1.63x, IRR 10.45% — but on an exit at the entry multiple (48.6x),
+  i.e. assuming a future buyer pays what J&J paid. That measures the target's growth, not
+  whether the price was right; the economic verdict rests on the unexplained premium.
+- **Goodwill as an independent check:** derived as a residual, $10,552mm against J&J's
+  disclosed $11,100mm (−$548mm, −4.9%), with two known reconciling items pushing in
+  opposite directions (~$0.7bn of other identifiable assets, down; ~$1,957mm of assumed
+  liabilities, up). The disclosed $1,800mm deferred tax liability is used; the model's own
+  statutory-rate estimate would have been $1,232mm.
+- **Disclosed, not fixed: the CVR weight is applied to a slightly different base than it
+  was solved on.** 0.541 = $865mm ÷ $1,600mm (the aggregate maximum), but the model applies
+  it per share: 45.09mm × $35.00 × 0.541 = $854mm. The $11mm difference is 0.06% of the
+  price and changes no conclusion. The $1,600mm maximum is larger than 45.09mm × $35.00 =
+  $1,578mm, most likely because it covers equity awards as well (not verified).
+
+What sourcing and cross-checking the inputs established:
 
 - **Two open questions closed with primary sources, in the same pass.** (1) The CVR's
   fair value now rests on two independent, convergent triangulations rather than one:
@@ -236,9 +272,9 @@ cross-checking the inputs already established:
   to reconcile to the cent.
 - **The two EV reconciliations disagree in a way worth keeping, not resolving.**
   Upfront-only, the derived EV sits $470mm (2.8%) BELOW J&J's stated $16.6bn. Once the
-  CVR is included at an independently-estimated fair value ($781mm, from J&J's own
-  contingent-consideration rollforward, not fitted to close this gap), the derived EV
-  sits $312mm (1.9%) ABOVE it — inside this file's own 2% "ties" threshold. Suggestive
+  CVR is included at fair value, the derived EV sits ABOVE it: $312mm (1.9%, inside this
+  file's own 2% "ties" threshold) at the earlier 0.495 weight ($781mm), and $384mm (2.3%,
+  just outside it) at the current 0.541 weight ($854mm) — see the CVR bullet above. Suggestive
   that the stated EV reflects some CVR value after all; not proof, since the CVR weight
   behind it is itself a circumstantial estimate. Both numbers are printed, not just the
   one that happens to tie.
@@ -329,7 +365,7 @@ Two items that will not close by finding a filing, handled by design instead of 
 as gaps: the financing mix (never disclosed — spanned across three scenarios in
 `scripts/run_jnj_abiomed.py`) and the buyer standalone forecast (not missing data, a
 mechanical pipeline run — `scripts/run_trellis_jnj.py`, needs `TRELLIS_USER_AGENT` and
-network access to SEC EDGAR).
+network access to SEC EDGAR; last run 29 Sep 2026).
 
 One figure still rests on a secondary source and is flagged as such in the code: the
 $252 unaffected share price. Needs confirming against a primary exchange/market-data

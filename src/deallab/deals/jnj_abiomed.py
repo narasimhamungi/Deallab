@@ -304,8 +304,8 @@ GUIDANCE = {
         f"thereafter. {CLOSE_8K}"),
     "year_of_close": (
         f"'The transaction will not have a material impact on financial results for "
-        f"2022.' {CLOSE_8K} -- consistent with a 22 December close leaving a nine-day "
-        f"stub in J&J's fiscal 2022."),
+        f"2022.' {CLOSE_8K} -- consistent with a 22 December close leaving a ten-day "
+        f"stub in J&J's fiscal 2022, which ended 1 January 2023."),
     "revenue_growth": (
         f"'The transaction will accelerate pro forma MedTech and Johnson & Johnson "
         f"enterprise revenue growth.' {CLOSE_8K}"),
@@ -549,9 +549,9 @@ BUYER_DRIVER_LOOKBACK_YEARS = 5
 
 BUYER_FORECAST_BASE_YEAR = 2022
 BUYER_FORECAST_BASE_YEAR_RATIONALE = (
-    "FY2022 -- the last fiscal year that ENDED before the acquisition closed (J&J's "
-    "FY2022 ended 1 January 2023; Abiomed closed 22 December 2022, leaving a nine-day "
-    "stub J&J itself said was immaterial to 2022 results).\n\n"
+    "FY2022 -- the last fiscal year in which Abiomed is not a material part of the "
+    "baseline (J&J's FY2022 ended 1 January 2023, ten days AFTER Abiomed closed on "
+    "22 December 2022; J&J itself said that stub was immaterial to 2022 results).\n\n"
     "This corrects a circularity that invalidated an earlier version of this model. "
     "Forecasting J&J's 'standalone' figures from the latest available base year "
     "(FY2025) uses history in which Abiomed is ALREADY CONSOLIDATED -- J&J's reported "

@@ -20,7 +20,8 @@ Two mechanisms:
    filings, which is the upgrade path.
 2. `stub_period` -- the partial year between close and the buyer's next fiscal year
    end, which is the only part of the target's earnings that lands in the year of
-   close. Abiomed closed 22 December 2022: nine days of J&J's FY2022. That is why J&J
+   close. Abiomed closed 22 December 2022: nine days to a nominal 31 December year-end,
+   ten to J&J's actual FY2022 end of 1 January 2023. That is why J&J
    was able to say the transaction "will not have a material impact on financial
    results for 2022" -- and a model that contributes a full year of Abiomed earnings to
    FY2022 will contradict a disclosed fact.
