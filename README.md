@@ -144,10 +144,13 @@ share on three milestones; stated enterprise value approximately $16.6bn.
 Three reasons this deal rather than a hypothetical:
 
 1. **It continues a proven thread.** ValuationLab established that J&J cannot be valued
-   as one company — pharma peer dispersion widens with more peers (2.5x to 4.7x),
-   structural rather than sample noise — while the MedTech segment values cleanly on its
-   own peer group. Abiomed is a real acquisition into exactly that segment, so the target
-   valuation DealLab consumes is one ValuationLab would stand behind.
+   off one peer set: at four peers each, pharma's EV/revenue spread is 2.5x against
+   MedTech's 1.5x, so a pharma median cannot value a segment while MedTech values cleanly
+   on its own peer group. (An earlier argument that the pharma spread widening to 4.7x
+   with more peers proved the dispersion structural was withdrawn: a min/max spread widens
+   with sample size by construction — see ValuationLab's correction.) Abiomed is a real
+   acquisition into exactly that segment, so the target valuation DealLab consumes is one
+   ValuationLab would stand behind.
 
 2. **It has an answer key.** J&J guided the transaction as slightly dilutive to neutral
    to adjusted EPS in year one *including financing impact*, accretive by approximately

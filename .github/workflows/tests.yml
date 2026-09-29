@@ -13,8 +13,8 @@ jobs:
       - name: Install upstream at HEAD, not a pinned release
         run: |
           python -m pip install --upgrade pip
-          pip install git+https://github.com/narasimhamungi/trellis.git
-          pip install --no-deps git+https://github.com/narasimhamungi/valuationlab.git
+          pip install git+https://github.com/narasimhamungi/trellis.git@v0.2.0
+          pip install --no-deps git+https://github.com/narasimhamungi/valuationlab.git@v0.2.0
       - name: Install DealLab
         run: pip install --no-deps -e . && pip install pytest ruff
       - name: Tests

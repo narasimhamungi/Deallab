@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "M&A transaction model: sources & uses, purchase accounting, synergies, pro-forma accretion/dilution and sponsor-style returns, with the accounting and economic verdicts kept structurally separate."
 requires-python = ">=3.10"
 dependencies = [
-    "valuationlab @ git+https://github.com/narasimhamungi/valuationlab.git",
+    "valuationlab @ git+https://github.com/narasimhamungi/valuationlab.git@v0.2.0",
 ]
 
 [project.optional-dependencies]

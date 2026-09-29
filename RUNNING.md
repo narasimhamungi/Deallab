@@ -5,8 +5,8 @@
 DealLab consumes ValuationLab as a package, which consumes Trellis the same way.
 
 ```bash
-pip install git+https://github.com/narasimhamungi/trellis.git
-pip install --no-deps git+https://github.com/narasimhamungi/valuationlab.git
+pip install git+https://github.com/narasimhamungi/trellis.git@v0.2.0
+pip install --no-deps git+https://github.com/narasimhamungi/valuationlab.git@v0.2.0
 pip install -e .
 pip install pytest ruff
 ```
