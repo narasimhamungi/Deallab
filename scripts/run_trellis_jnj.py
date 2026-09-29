@@ -38,9 +38,9 @@ def main() -> int:
         from trellis.statements import (
             build_annual_table,
             fill_derived_gaps,
+            fiscal_year_key,
             run_all_checks,
         )
-        from trellis.statements import fiscal_year_key
     except ImportError as e:
         print(f"Trellis is not installed: {e}")
         print("pip install git+https://github.com/narasimhamungi/trellis.git")
