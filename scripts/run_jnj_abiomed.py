@@ -118,8 +118,7 @@ def _target_years() -> tuple[StandaloneYear, ...]:
     """Abiomed forward years: normalised, projected, then calendarized onto J&J's year.
 
     NOT a Trellis run: Abiomed was acquired and stopped filing, so there is no forward
-    XBRL to ingest. Three corrections applied, each of which an earlier version of this
-    script got wrong:
+    XBRL to ingest. Three adjustments, each needed for a correct forward view:
 
     1. NORMALISED BASE. Abiomed's reported FY2022 operating income ($140.7mm) is
        depressed by a one-time $116mm acquired-IPR&D charge. Growing the reported figure
@@ -197,8 +196,8 @@ def main() -> int:
                         sourced("intangible_life_years", 14.0,
                                 "'average weighted life of 14 years' -- " + deal.JNJ_10Q_Q1_2023)),
         # IPR&D: indefinite-lived under ASC 350-30, so identifiable (reduces goodwill)
-        # but never amortised. Excluding it entirely -- as an earlier version did --
-        # overstated goodwill by its full $1.1bn.
+        # but never amortised. Excluding it entirely would overstate goodwill by its
+        # full $1.1bn.
         IntangibleClass("IPR&D (unapproved Impella programs)", deal.IPRD_FV,
                         useful_life_years=None),
     )
@@ -206,17 +205,16 @@ def main() -> int:
     # Funding needed = what leaves (consideration + expensed fees) LESS what comes with
     # the target. Abiomed had ~$1bn of net cash and no debt, so that cash arrives at
     # close and funds part of the price -- sources & uses treats it as a source, and
-    # sizing the funding plan without netting it raises $1bn too much. The engine's own
-    # balance check caught exactly this on the first run of this script; the fix belongs
-    # here, in the caller that sizes the plan, not in sources_uses.py.
+    # sizing the funding plan without netting it raises $1bn too much, which the
+    # engine's balance check rejects. The netting belongs here, in the caller that sizes
+    # the plan, not in sources_uses.py.
     # Funding needed = UPFRONT consideration only. The CVR is deliberately excluded:
     # sources_uses.build() (fund_contingent_at_close=False, the default) correctly
     # treats it as an ASC 805 liability, not day-one cash -- so sizing the funding plan
-    # off total_equity_purchase_price() (which INCLUDES the CVR) raised $781mm more
-    # than the deal actually needed at close, and sources & uses failed its own balance
-    # check by exactly that amount on the first real-data run. Fixed here, at the one
-    # place that decides how much to raise, matching the treatment already correct in
-    # sources_uses.py.
+    # off total_equity_purchase_price() (which INCLUDES the CVR) would raise $781mm more
+    # than the deal needs at close, and sources & uses would fail its balance check by
+    # exactly that amount. Handled here, at the one place that decides how much to
+    # raise, matching the treatment in sources_uses.py.
     total_funding = (deal.TERMS.upfront_equity_purchase_price()
                      + deal.ADVISORY_FEES_PRETAX.value
                      + deal.TARGET_NET_DEBT.value)  # negative = net cash, reduces need
@@ -290,19 +288,16 @@ def main() -> int:
     print("   (b) liabilities assumed, which this model estimates at ~$1,957mm but does")
     print("       not feed into the allocation. Adding them would push goodwill UP,")
     print("       narrowing it.")
-    print("  Tracking this gap honestly is the point. An earlier version of this script")
-    print("  landed 2.4% away with a WORSE model (IPR&D dumped into goodwill, DTL")
-    print("  self-computed); tightening both inputs moved the answer further from J&J's")
-    print("  number, not closer. Proximity to a disclosed figure is not evidence of")
-    print("  correctness when the inputs behind it are known to be wrong.")
+    print("  Proximity to a disclosed figure is not evidence of correctness: folding")
+    print("  IPR&D into goodwill and self-computing the DTL lands closer (2.4% away)")
+    print("  with inputs known to be wrong. The gap is tracked, not tuned away.")
     for n in base.allocation.notes:
         print(f"  ! {n}")
 
     # --- Economic lens: returns, standalone value, the two verdicts -----------------
-    # This section is why DealLab exists. An earlier version of this script stopped at
-    # accretion/dilution -- which is precisely the failure the whole repo was built to
-    # avoid, since accretion is an artefact of relative P/E and funding cost and says
-    # nothing about whether the price was right.
+    # This section is why DealLab exists. Stopping at accretion/dilution is precisely
+    # the failure the repo was built to avoid: accretion is an artefact of relative P/E
+    # and funding cost and says nothing about whether the price was right.
 
     tax = deal.BUYER_TAX_RATE_OVERRIDE.value
     syn_npv = synergies.npv(WACC, deal.BUYER_TAX_RATE_OVERRIDE, years=10)
@@ -315,15 +310,14 @@ def main() -> int:
     fcf = [t.operating_income * (1 - tax) + synergies.year(i).net_pretax * (1 - tax)
            for i, t in enumerate(target_years, start=1)]
     # entry_ebitda uses YEAR 1 (closest available proxy to the actual deal-date run
-    # rate) -- NOT year 5. An earlier version divided the deal EV by YEAR 5's EBITDA to
-    # get "entry_multiple", then applied that SAME multiple at exit. That is circular:
+    # rate) -- NOT year 5. Dividing the deal EV by YEAR 5's EBITDA to get
+    # "entry_multiple", then applying that SAME multiple at exit, is circular:
     # exit_equity = exit_ebitda * exit_multiple = exit_ebitda * (EV / exit_ebitda) = EV,
     # algebraically, no matter how much the business actually grows between year 1 and
     # year 5. The "conservative convention" is supposed to mean "hold the multiple flat,
     # still credit the earnings growth" -- not erase the growth entirely by defining the
-    # multiple in terms of the exit figure it is later applied to. Caught because MOIC
-    # came back at 1.05x and IRR near 1% for a business modelled to grow double digits,
-    # which does not happen without a real construction error.
+    # multiple in terms of the exit figure it is later applied to (the symptom: a MOIC
+    # near 1.0x for a business modelled to grow double digits).
     entry_ebitda = target_years[0].operating_income
     exit_ebitda = target_years[-1].operating_income  # EBITDA proxy: no D&A sourced
     entry_multiple = deal.TERMS.implied_enterprise_value() / entry_ebitda

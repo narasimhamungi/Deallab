@@ -67,7 +67,7 @@ def main() -> int:
 
     print("\n" + reg.report())
 
-    print("\nJ&J's OWN PURCHASE PRICE ALLOCATION (sourced this pass -- cross-check, not")
+    print("\nJ&J's OWN PURCHASE PRICE ALLOCATION (sourced -- cross-check, not")
     print("model input for goodwill/intangibles, which the model derives independently)")
     print("-" * 72)
     for k, v in deal.ACTUAL_PPA.items():

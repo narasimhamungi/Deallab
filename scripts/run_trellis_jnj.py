@@ -5,9 +5,7 @@ a pipeline run against live SEC EDGAR data, not a research task. J&J (CIK 200406
 already in Trellis's validated registry, so this is: fetch -> build -> check -> forecast,
 the same four steps ValuationLab runs for every company it touches.
 
-Needs network access to data.sec.gov, which this sandbox's egress proxy does not allow
-(it's locked to package registries -- PyPI, GitHub, npm -- not general web access). Run
-this on your own machine, where Trellis is already installed per RUNNING.md.
+Needs network access to data.sec.gov and Trellis installed per RUNNING.md.
 
     export TRELLIS_USER_AGENT="YourName your-email@example.com"   # SEC requires this
     python scripts/run_trellis_jnj.py
@@ -90,11 +88,10 @@ def main() -> int:
         print(f"  HARD FAIL  {c.name}: {c.detail}")
     for c in soft_fails:
         print(f"  soft warn  {c.name}: {c.detail}")
-    # A hard failure that never stops anything is not a hard failure. This script
-    # previously printed "treat anything downstream as suspect" and continued, every
-    # run, on FY2006/FY2007 balance-sheet gaps two decades outside the window this
-    # model actually uses -- which trains the reader to scroll past the loudest signal
-    # the tool produces. So the failures are scoped: re-run the same checks over ONLY
+    # A hard failure that never stops anything is not a hard failure. Printing "treat
+    # anything downstream as suspect" and continuing on FY2006/FY2007 balance-sheet gaps
+    # two decades outside the window this model uses would train the reader to scroll
+    # past the loudest signal the tool produces. So the failures are scoped: re-run the same checks over ONLY
     # the years the drivers are derived from, and block on those.
     window_start = deal.BUYER_FORECAST_BASE_YEAR - deal.BUYER_DRIVER_LOOKBACK_YEARS + 1
     window = {y: v for y, v in built.table.items()
@@ -177,10 +174,10 @@ def main() -> int:
     print(f"  Base-year period END: {base_end} (verified from the filing, not inferred "
           f"from the bucket label)")
     # Two-sided, and the lower bound matters as much as the upper. The upper bound
-    # catches a base year that has swallowed the target. The LOWER bound catches the
-    # bug that actually happened: under the old keying, bucket 2022 held the period
-    # ending 2022-01-02 -- J&J's FY2021, a full fiscal year further from the deal than
-    # the rationale intended. A one-sided "is it pre-acquisition" test calls that
+    # catches a base year that has swallowed the target. The LOWER bound catches a
+    # mis-keyed year: under calendar-year keying, bucket 2022 holds the period ending
+    # 2022-01-02 -- J&J's FY2021, a full fiscal year further from the deal than the
+    # rationale intends. A one-sided "is it pre-acquisition" test calls that
     # perfectly fine, because it is pre-acquisition; it is just the WRONG pre-
     # acquisition year. Anything closing more than roughly two quarters after the base
     # year ended means a whole fiscal year is being skipped.

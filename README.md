@@ -1,5 +1,7 @@
 # DealLab
 
+[![CI](https://github.com/narasimhamungi/Deallab/actions/workflows/tests.yml/badge.svg)](https://github.com/narasimhamungi/Deallab/actions/workflows/tests.yml)
+
 An M&A transaction model that answers whether an acquisition creates value for the
 buyer — and reports the **accounting answer and the economic answer separately**, because
 they are different questions and a deal can pass one while failing the other.
@@ -14,17 +16,15 @@ from the 8-Ks and 10-Ks on both sides of the deal — target fundamentals from A
 own filings, J&J's own headline purchase price allocation (goodwill $11.1bn, amortizable
 intangibles $6.6bn, IPR&D $1.1bn, and a $1.8bn deferred tax liability explicitly
 attributed to this acquisition by name) from J&J's 10-K — and carries the disclosed EPS
-guidance the model is checked against. The CVR's probability weight now rests on
-two independent, convergent triangulations (0.541 primary, 0.495 corroborating) rather
-than a blocking unknown, and the buyer-side forecast's driver decisions (tax rate,
-revenue growth window, and the base year itself) are deliberate, cited choices — with a
-prior open question (whether the historical revenue Trellis pulls already reflects the
-Kenvue continuing-operations restatement) now resolved with two primary sources, and
-confirmed to be the correct basis for this model. Two items remain open by design: the
-CVR's precise *booked* fair value (a further upgrade on the estimate now in use, not a
-blocker) and J&J's undisclosed financing mix (handled as a three-scenario sensitivity,
-since the information doesn't exist publicly to source). **The full model has been run on
-real data (29 Sep 2026)** — results under [Key findings](#key-findings), full output in
+guidance the model is checked against. The CVR's probability weight rests on two
+independent, convergent triangulations (0.541 primary, 0.495 corroborating), and the
+buyer-side forecast's driver decisions (tax rate, revenue growth window, and the base
+year itself) are deliberate, cited choices. Trellis's historical J&J revenue is on the
+Kenvue continuing-operations basis, confirmed with two primary sources, which is the
+correct basis for this model. Two items remain open by design: the CVR's precise
+*booked* fair value (an upgrade on the estimate in use, not a blocker) and J&J's
+undisclosed financing mix (a three-scenario sensitivity, since it is not public).
+**The full model has been run on real data (29 Sep 2026)** — results under [Key findings](#key-findings), full output in
 [`docs/results/jnj_abiomed_run.txt`](docs/results/jnj_abiomed_run.txt).
 
 ---
@@ -52,8 +52,8 @@ Three further failures are near-universal in merger-model templates:
 
 ## Why it matters
 
-For an IB, corporate development or transaction advisory seat, the interviewable skill is
-not building the model — it is knowing what the model cannot tell you. "The deal is 3%
+In an IB, corporate development or transaction advisory seat, the skill is not building
+the model — it is knowing what the model cannot tell you. "The deal is 3%
 accretive" is a starting point. "It is 3% accretive on adjusted EPS, 6% dilutive on GAAP,
 and the price requires $340mm of annual synergy to hold EPS flat against $180mm
 management has identified" is an analysis. This repo is built so the second version is the
@@ -146,9 +146,9 @@ Three reasons this deal rather than a hypothetical:
 1. **It continues a proven thread.** ValuationLab established that J&J cannot be valued
    off one peer set: at four peers each, pharma's EV/revenue spread is 2.5x against
    MedTech's 1.5x, so a pharma median cannot value a segment while MedTech values cleanly
-   on its own peer group. (An earlier argument that the pharma spread widening to 4.7x
-   with more peers proved the dispersion structural was withdrawn: a min/max spread widens
-   with sample size by construction — see ValuationLab's correction.) Abiomed is a real
+   on its own peer group. (Adding peers does not settle whether the pharma dispersion is
+   structural: a min/max spread widens with sample size by construction — see
+   ValuationLab.) Abiomed is a real
    acquisition into exactly that segment, so the target valuation DealLab consumes is one
    ValuationLab would stand behind.
 
@@ -211,28 +211,24 @@ exists for, and most merger models do not have the module at all.
 
 What sourcing and cross-checking the inputs established:
 
-- **Two open questions closed with primary sources, in the same pass.** (1) The CVR's
-  fair value now rests on two independent, convergent triangulations rather than one:
-  J&J's FY2024 10-K explicitly attributes a $17.7bn "net of cash acquired" total to
-  Abiomed by name (calling the year's other acquisitions immaterial) — netted against
-  this file's own upfront-less-cash figure, that implies an $865mm CVR fair value
-  (weight 0.541), corroborated (not replaced) by the earlier 0.495 estimate drawn from
-  J&J's aggregate, not-Abiomed-specific contingent-consideration rollforward. Two
-  disclosures, independently arrived at, landing within 5 points of each other. (2)
-  Whether Trellis's historical J&J revenue reflects the originally-filed consolidated
-  total or an already-restated continuing-operations figure — confirmed as the latter,
-  with J&J's FY2023 10-K stating outright that "segment results have been recast for
-  all periods to reflect the continuing operations of the Company" following the
-  Kenvue separation. That is exactly the right basis for this model (Abiomed sits in
-  the surviving MedTech segment) — not a data-quality problem to route around.
-- **Improving the CVR evidence made one check slightly worse, and that's reported
-  plainly.** The tighter, better-triangulated 0.541 weight moves the full EV
-  reconciliation from a "ties" call (+1.9%, using the earlier 0.495 estimate) to a
-  "DIVERGES" one (+2.3%) against the file's own 2% threshold. The broad shape of the
-  original finding survives — the CVR-inclusive gap is still smaller than, and on the
-  opposite side of, the upfront-only gap — but a threshold call this tight flipping
-  when the underlying estimate improved is itself informative: the uncertainty here
-  hasn't shrunk to where a two-decimal-point cutoff means much on its own.
+- **The CVR's fair value rests on two independent, convergent triangulations.** J&J's
+  FY2024 10-K attributes a $17.7bn "net of cash acquired" total to Abiomed by name
+  (calling the year's other acquisitions immaterial); netted against the deal file's
+  upfront-less-cash figure, that implies an $865mm CVR fair value (weight 0.541),
+  corroborated by a 0.495 estimate from J&J's aggregate, not-Abiomed-specific
+  contingent-consideration rollforward. Two disclosures, landing within 5 points of each
+  other.
+- **The buyer's history is on the right basis.** Trellis's historical J&J revenue is the
+  restated continuing-operations figure, not the originally filed consolidated total:
+  J&J's FY2023 10-K states that "segment results have been recast for all periods to
+  reflect the continuing operations of the Company" following the Kenvue separation.
+  That is the right basis for this model (Abiomed sits in the surviving MedTech segment).
+- **The EV reconciliation call depends on the CVR weight.** At 0.541 the full
+  reconciliation is +2.3%, just outside the deal file's 2% "ties" threshold; at 0.495 it
+  is +1.9%, just inside. Either way the CVR-inclusive gap is smaller than, and on the
+  opposite side of, the upfront-only gap; a threshold call that flips between two
+  credible weights shows the uncertainty is too large for a cutoff this tight to mean
+  much on its own.
 - **A real, unresolved $470mm gap.** With Abiomed's actual sourced net cash ($1,004.2mm,
   30 Jun 2022, corroborated word-for-word by Abiomed's own press release: "no debt") and
   the actual disclosed share count (45.091184mm), upfront-only derived EV is $16,130mm
@@ -242,23 +238,18 @@ What sourcing and cross-checking the inputs established:
   consideration only; less plausibly, it could implicitly reflect the CVR at a specific
   ~30% probability weight, which would close the gap almost exactly by coincidence. The
   model states the gap and both readings rather than picking one to force a reconciliation.
-- **A citation error caught by re-deriving it, not by re-reading it.** An earlier pass
-  pointed the balance-sheet pull at Abiomed's 10-Q for the quarter ended 30 September
-  2022, calling it "the last balance sheet before announcement." It was filed 3 November
-  2022 — two days *after* the 1 November announcement. The actual last public balance
-  sheet at signing is the 30 June 2022 10-Q. Corrected in the deal file, left visible
-  rather than silently fixed, because reaching for the nearest-dated filing without
-  checking it actually predates the trigger event is a realistic failure mode.
-- **A real bug caught by a test.** The fiscal-overlap calculation returned the complement
-  of the correct figure (9 months instead of 3), which would have inverted every
-  calendarization weight. Caught because the test computed the expected value by hand from
-  the Abiomed/J&J calendars rather than snapshotting the code's output.
-- **A double-count caught by a linter.** `target_tax_rate` was accepted and never used —
-  because the adjustment it belongs to was missing. Repaying the target's debt in sources
-  & uses eliminates the target's own pre-deal interest expense, and leaving it in charges
-  the same debt twice: once inside the target's contributed net income and again as new
-  acquisition interest. Now booked, after tax at the target's rate, which is the one place
-  that rate legitimately enters the combination.
+- **The pre-announcement balance sheet is the 30 June 2022 10-Q.** Abiomed's 10-Q for the
+  quarter ended 30 September 2022 was filed 3 November 2022, two days *after* the
+  1 November announcement, so it was not public at signing. A filing is used only if it
+  predates the trigger event, not because it is the nearest-dated.
+- **Calendarization weights are tested against hand-computed overlaps.** Abiomed's March
+  year end puts 3 months of its FY2022 inside J&J's calendar 2022; the test derives that
+  from the two calendars by hand rather than snapshotting the code's output.
+- **The target's own interest is eliminated where its debt is repaid.** Repaying the
+  target's debt in sources & uses removes its pre-deal interest expense; leaving it in
+  would charge the same debt twice, once inside the target's contributed net income and
+  again as new acquisition interest. It is booked after tax at the target's rate, the one
+  place that rate legitimately enters the combination.
 - **The CVR is 9.2% of the upfront price** — large enough that carrying it at zero or at
   maximum both materially misstate the consideration, and therefore goodwill.
 - **Target fundamentals tie exactly.** Pretax income ($190.560mm) less the tax provision
@@ -273,8 +264,8 @@ What sourcing and cross-checking the inputs established:
 - **The two EV reconciliations disagree in a way worth keeping, not resolving.**
   Upfront-only, the derived EV sits $470mm (2.8%) BELOW J&J's stated $16.6bn. Once the
   CVR is included at fair value, the derived EV sits ABOVE it: $312mm (1.9%, inside this
-  file's own 2% "ties" threshold) at the earlier 0.495 weight ($781mm), and $384mm (2.3%,
-  just outside it) at the current 0.541 weight ($854mm) — see the CVR bullet above. Suggestive
+  file's own 2% "ties" threshold) at the 0.495 weight ($781mm), and $384mm (2.3%,
+  just outside it) at the 0.541 weight in use ($854mm) — see the CVR bullet above. Suggestive
   that the stated EV reflects some CVR value after all; not proof, since the CVR weight
   behind it is itself a circumstantial estimate. Both numbers are printed, not just the
   one that happens to tie.
@@ -285,17 +276,15 @@ What sourcing and cross-checking the inputs established:
   both being called "sourced."
 - **J&J's own PPA sourced, not modelled.** Goodwill $11.1bn, amortizable intangibles
   $6.6bn at a 14-year weighted life (primarily in-market Impella products, one bucket —
-  not split by sub-category as the fixture originally guessed the disclosure would be),
+  not split by sub-category),
   and IPR&D $1.1bn indefinite-lived at 52%-70% probability of success. Two different
   measurement-period-adjustment figures appear across J&J's own filings ($0.1bn per the
   Q1 2023 10-Q, $0.2bn per the FY2024 10-K) — expected, not an error, since ASC 805
   true-ups accrue over the year following acquisition; the later, fuller figure is the
   one kept.
-- **A wrong prediction, corrected by running the actual numbers instead of trusting the
-  hypothesis.** Expected J&J's own historicals to show a clean revenue level-shift at the
-  Kenvue spinoff (completed Aug 2023). They didn't — revenue dipped in FY2022, not
-  FY2023, and grew every year after. What the real data showed instead was more useful:
-  GAAP net margin swinging 17.8% → 26.5% → 22.4% → **15.8% (2024, the low point despite
+- **J&J's history shows no clean revenue level-shift at the Kenvue spinoff** (completed
+  Aug 2023): revenue dipped in FY2022, not FY2023, and grew every year after. What moves
+  instead is GAAP net margin, swinging 17.8% → 26.5% → 22.4% → **15.8% (2024, the low point despite
   +11% revenue growth that year)** → 28.5%, decoupled from revenue entirely. J&J's own
   FY2024 10-K explains it directly — talc litigation charges swinging from $1.9bn of
   *income* (2022) to $6.6bn of *expense* (2023) to $4.7bn of expense (2024), plus a
@@ -310,8 +299,8 @@ What sourcing and cross-checking the inputs established:
   despite the *GAAP* rate — what Trellis derives from history — swinging 8%–17%
   year to year on the volatility above. Applied a 16% override on Trellis's own derived
   `Drivers` after the fact (`dataclasses.replace`), since Trellis's built-in `overrides`
-  parameter only supports `interest_rate`, `debt_repayment`, and `revolver_limit` —
-  confirmed directly against its source, not assumed — and has no mechanism for
+  parameter only supports `interest_rate`, `debt_repayment`, and `revolver_limit` and
+  has no mechanism for
   overriding an income-statement ratio driver at all. (2) Revenue growth ranged 3.34%
   to 8.52% across lookback windows tested — real sensitivity, not noise. Chose a 5-year
   window excluding 2022–2023, reasoned in two tiers of confidence: FY2023's mid-year
@@ -343,14 +332,14 @@ annual synergy the price requires versus the synergy anyone has actually identif
 Sourced and in the repo: consideration terms, CVR structure and all three milestones,
 stated EV, tender-derived share count, disclosed EPS guidance, integration structure.
 
-Sourced across four passes: target revenue, operating income, net income, effective
+Also sourced: target revenue, operating income, net income, effective
 tax rate, net debt, and book equity from Abiomed's own FY2022 10-K and 30 June 2022
 10-Q (the correct pre-announcement balance sheet date — see Key findings); J&J's own
 headline goodwill, amortizable intangibles, IPR&D, pretax acquisition costs, and the
 Abiomed-specific deferred tax liability from J&J's 10-Ks. Total liabilities assumed is a
 *demonstrated* estimate (~$1,957mm), not a single disclosed line — the DTL plus
 Abiomed's own last-known operating liabilities, summed and tagged as a computation
-rather than a citation. The CVR's probability weight (0.541, corroborated by an earlier
+rather than a citation. The CVR's probability weight (0.541, corroborated by a separate
 0.495 estimate) is likewise a cited, circumstantial *estimate* built from two
 independent triangulations, not a confirmed fair value — see its own citation for why.
 
@@ -389,8 +378,6 @@ python -m pytest -q                 # 176 tests
 exercise the pipeline and show the output shape, not to say anything about any real deal.
 
 ## Known limitations
-
-Stated rather than discovered:
 
 - **No bargain purchase, NCI, measurement-period adjustments, or replacement share-based
   awards.** Each is real ASC 805 territory and each is out of scope.

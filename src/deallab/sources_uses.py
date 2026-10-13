@@ -13,7 +13,7 @@ the check reports rather than raises: an unbalanced S&U is diagnostic informatio
 which input is wrong, and throwing it away by raising immediately would make it harder
 to find, not easier.
 
-One genuine subtlety, and it is the thing interviewers probe: transaction fees split in
+One genuine subtlety: transaction fees split in
 two directions. Debt issuance costs are capitalised and amortised against the debt
 (ASC 835-30); advisory, legal and other deal costs are expensed as incurred
 (ASC 805-10-25-23) and never touch goodwill. Both are uses of cash at close. Only one

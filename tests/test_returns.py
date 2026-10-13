@@ -63,12 +63,10 @@ def test_moic_below_one_is_flagged_before_the_irr_is_read():
 
 
 def test_deriving_entry_multiple_from_exit_year_ebitda_erases_growth_value():
-    """Regression test for a real bug: an earlier orchestration script computed
-    entry_multiple = EV / EXIT-year EBITDA, then applied that same multiple at exit.
-    That is circular -- exit_equity = exit_ebitda * (EV / exit_ebitda) = EV exactly,
-    algebraically, no matter how much the business grows. Caught on a real-data run
-    when a business modelled to grow double digits produced MOIC ~1.0x and IRR ~0%,
-    which does not happen without a construction error."""
+    """entry_multiple = EV / EXIT-year EBITDA, applied again at exit, is circular --
+    exit_equity = exit_ebitda * (EV / exit_ebitda) = EV exactly, algebraically, no
+    matter how much the business grows (the symptom: MOIC ~1.0x and IRR ~0% for a
+    business modelled to grow double digits)."""
     ev = 17_916.0
     year1_ebitda, year5_ebitda = 250.0, 500.0  # doubles over the horizon
     fcf = [30.0, 40.0, 50.0, 60.0, 70.0]

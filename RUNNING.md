@@ -51,11 +51,9 @@ analysis doesn't need to refetch), and the 5-year forecast to
 since Trellis itself reports raw as-filed dollars and the conversion happens once,
 deliberately, at this boundary rather than being left for a caller to get wrong later.
 
-**Needs outbound network access to `data.sec.gov`.** If you're running this from an
-environment with restricted egress (a sandboxed container, a locked-down CI runner),
-it will fail with a 403 regardless of the user-agent — that's the network boundary
-blocking the request, not an ingestion bug. Run it somewhere with normal internet
-access.
+**Needs outbound network access to `data.sec.gov`.** Behind restricted egress (a
+locked-down CI runner, say) it fails with a 403 regardless of the user-agent — the
+network boundary blocking the request, not an ingestion bug.
 
 J&J's diluted share count is not in Trellis's schema (statement line items only, no
 per-share data) — source it separately from the same 10-K's EPS footnote, the same way

@@ -7,12 +7,12 @@ anywhere in it. A merger model whose inputs are plausible-but-invented produces 
 answer indistinguishable from a researched one, and this deal was chosen precisely
 because it has a public answer key to check against.
 
-**Why this deal.** ValuationLab established that J&J cannot be valued as one company:
-pharma peer dispersion widens with more peers (2.5x to 4.7x), which is structural
-patent-cliff timing rather than sample noise, while the MedTech segment values cleanly
-on its own peer group at roughly $101-157bn EV. Abiomed is a real acquisition into
-exactly that segment. So the target valuation DealLab consumes is one ValuationLab would
-stand behind, not a company-wide blend it already flagged as unreliable.
+**Why this deal.** ValuationLab established that J&J cannot be valued off one peer set:
+at four peers each, pharma's EV/Revenue spread is 2.5x against MedTech's 1.5x, so a
+pharma median cannot value a segment while the MedTech segment values cleanly on its own
+peer group. Abiomed is a real acquisition into exactly that segment. So the target
+valuation DealLab consumes is one ValuationLab would stand behind, not a company-wide
+blend it already flagged as unreliable.
 
 **The answer key.** J&J guided the transaction as slightly dilutive to neutral to
 adjusted EPS in the first year including financing impact, accretive by roughly $0.05 in
@@ -26,22 +26,17 @@ decision to run Abiomed as a standalone business within J&J MedTech -- an explic
 choice to forgo integration cost synergies. Assuming a generic percentage-of-opex cost
 synergy for this deal contradicts a disclosed fact.
 
-**A correction made against this file's own earlier guidance.** An prior version of this
-module directed the target-balance-sheet pull to Abiomed's 10-Q for the quarter ended
-30 September 2022, calling it "the last balance sheet before announcement." That is
-wrong: the Nov 1 2022 announcement predates that filing -- it was filed 3 November 2022,
-two days AFTER announcement, as part of Abiomed's ordinary quarterly cycle. The actual
-last balance sheet public at signing is the 10-Q for the quarter ended 30 June 2022,
-filed 4 August 2022. Figures below now use that date. Left here rather than silently
-fixed, because the same mistake (reaching for the nearest-dated filing without checking
-it was actually public before the trigger event) is a realistic failure mode, not a typo.
+**Target balance-sheet date.** The last balance sheet public at signing is Abiomed's
+10-Q for the quarter ended 30 June 2022, filed 4 August 2022. The 30 September 2022
+10-Q was filed 3 November 2022, two days AFTER the 1 November announcement, so it is
+not a pre-announcement figure. A filing is used only if it was public before the
+trigger event, not merely because it is the nearest-dated.
 
 **An unresolved finding, not silently squared away.** Using the figures this file
-actually carries -- $380.00 x 45.091184mm shares = $17,134.65mm upfront, less
-$1,004.197mm of net cash (30 June 2022, corroborated word-for-word by Abiomed's own 4
-August 2022 press release) -- gives an upfront-only derived EV of $16,130.45mm against
-J&J's stated "~$16.6 billion": a $469.5mm (2.8%) shortfall. Two readings, neither
-confirmed:
+carries -- $380.00 x 45.091184mm shares = $17,134.65mm upfront, less $1,004.197mm of net
+cash (30 June 2022, corroborated word-for-word by Abiomed's own 4 August 2022 press
+release) -- gives an upfront-only derived EV of $16,130.45mm against J&J's stated
+"~$16.6 billion": a $469.5mm (2.8%) shortfall. Two readings, neither confirmed:
 (a) J&J's figure describes the $380 cash consideration only (the CVR is mentioned
 separately in the same sentence as an addition, not folded into "$16.6 billion") and is
 simply a rounded, approximate PR number rather than a rigorously netted EV -- the more
@@ -49,38 +44,31 @@ natural reading of the sentence, and the one this file defaults to.
 (b) The stated EV already reflects the CVR at a high probability weight: at ~30% of the
 $35.00 maximum (45.091184mm x $35.00 x 0.30 = $473.5mm) the gap closes almost exactly --
 which would be a striking coincidence, or would mean J&J's deal team assumed materially
-higher CVR realisation than this file's own placeholder weight. Not adopted, because
-nothing in the announcement or close 8-Ks supports reading "$16.6 billion... which
-includes cash acquired" as CVR-inclusive; noted here so a future pass with the actual
-CVR fair value (see `MISSING`) can test it directly instead of guessing.
+higher CVR realisation. Not adopted, because nothing in the announcement or close 8-Ks
+supports reading "$16.6 billion... which includes cash acquired" as CVR-inclusive; the
+booked CVR fair value (see `MISSING`) would test it directly.
 `terms.ev_reconciliation` surfaces the upfront-only gap on every run rather than hiding
 it inside a chosen convention.
 
-**A later pass gives (b) more credibility than it had, and a subsequent pass tightened**
-**the estimate further -- in the direction that makes (b) slightly weaker, not stronger,**
-**and that is reported plainly rather than smoothed over.** `CVR.probability_weight` is
-now an independently derived estimate (0.541, primarily from J&J's own FY2024 10-K
-explicitly attributing a $17.7bn acquisition total to Abiomed by name -- see
-JNJ_10K_FY2024_ACQUISITION_TOTAL -- corroborated by an earlier, less direct 0.495
-estimate from J&J's aggregate contingent-consideration rollforward). Running the FULL
-reconciliation with the current weight -- upfront + CVR at fair value ($854mm) + net
-debt -- gives a derived EV of $16,984mm against the stated $16,600mm: a +2.3% gap, just
-OUTSIDE this file's 2% "ties" threshold (an earlier pass, using the less-triangulated
-0.495 weight, had this at +1.9%, just inside it). The CVR-inclusive number still lands
-closer to the stated EV than the upfront-only gap (-2.8%) does, on the OPPOSITE side --
-so the broad shape of the earlier finding (the stated EV is not purely upfront-cash-only)
-survives -- but improving the evidence made the precise "ties" call flip, which is worth
-knowing plainly: the underlying uncertainty here has not been resolved to the point that
-a threshold this tight means anything on its own. Both reconciliations are left visible
-in `check_inputs.py` rather than reporting only the one that ties.
+**The CVR-inclusive reconciliation.** `CVR.probability_weight` is an independently
+derived estimate (0.541, primarily from J&J's own FY2024 10-K attributing a $17.7bn
+acquisition total to Abiomed by name -- see JNJ_10K_FY2024_ACQUISITION_TOTAL --
+corroborated by a 0.495 estimate from J&J's aggregate contingent-consideration
+rollforward). Upfront + CVR at fair value ($854mm) + net debt gives a derived EV of
+$16,984mm against the stated $16,600mm: +2.3%, just OUTSIDE this file's 2% "ties"
+threshold (at the 0.495 weight it is +1.9%, just inside). The CVR-inclusive number lands
+closer to the stated EV than the upfront-only gap (-2.8%) does, on the OPPOSITE side, so
+the stated EV is probably not purely upfront cash; but a threshold call that flips
+between two credible weights shows the uncertainty is too large for a cutoff this tight
+to mean much on its own. Both reconciliations are printed by `check_inputs.py`.
 
-STATUS: deal terms, guidance, target FY2022 fundamentals, and J&J's own headline PPA
-figures (goodwill, amortizable intangibles, IPR&D, acquisition costs, and now the
-Abiomed-specific deferred tax liability) are sourced. The CVR probability weight is now
-an ASSUMED, cited estimate (0.495, from circumstantial evidence) rather than a blocking
-unset value. Two items remain genuinely outstanding -- the CVR's precise booked fair
-value and J&J's actual financing mix -- plus one mechanical item, the buyer-side Trellis
-forecast, which is a pipeline run rather than a research task. See `MISSING` below.
+STATUS: deal terms, guidance, target FY2022 fundamentals, J&J's own headline PPA
+figures (goodwill, amortizable intangibles, IPR&D, acquisition costs) and the
+Abiomed-specific deferred tax liability are sourced. The CVR probability weight is an
+ASSUMED, cited estimate (0.541, corroborated at 0.495). Two items remain outstanding --
+the CVR's precise booked fair value and J&J's actual financing mix (handled as three
+scenarios) -- plus one mechanical item, the buyer-side Trellis forecast, which is a
+pipeline run rather than a research task. See `MISSING` below.
 """
 
 from __future__ import annotations
@@ -128,7 +116,7 @@ JNJ_ADJUSTED_TAX_RATE_DISCLOSURES = (
     "history: roughly 8%-17% year to year) -- consistent with J&J's own stated purpose "
     "for the adjusted figure, which explicitly excludes 'the effects of an acquisition, "
     "restructuring, litigation, and changes in applicable laws and regulations.' Only "
-    "three quarterly data points located this pass, not a complete disclosed annual "
+    "three quarterly data points located, not a complete disclosed annual "
     "series -- reading a single go-forward rate off three Q1 prints is itself a choice, "
     "not a citation, which is why this stays tagged ASSUMED rather than SOURCED.")
 JNJ_10K_FY2024_ACQUISITION_TOTAL = (
@@ -144,13 +132,12 @@ JNJ_10K_FY2024_ACQUISITION_TOTAL = (
     "consideration ($17,135mm) less cash acquired ($300mm, ACTUAL_PPA) = $16,835mm "
     "upfront net of cash. $17,700mm (disclosed) - $16,835mm = $865mm implied CVR fair "
     "value -- against a $1,600mm undiscounted maximum, an implied weight of 0.541. "
-    "This is the primary basis for CVR.probability_weight below; the older $792mm/0.495 "
-    "estimate is retained as corroborating (not primary) evidence, since it drew on "
+    "This is the primary basis for CVR.probability_weight below; the $792mm/0.495 "
+    "estimate is kept as corroborating (not primary) evidence, since it draws on "
     "J&J's AGGREGATE contingent-consideration balance across all acquisitions, not one "
     "attributed to Abiomed specifically.")
 JNJ_CONTINUING_OPERATIONS_RESTATEMENT = (
-    "RESOLVES an open question this file previously carried unanswered: does Trellis's "
-    "historical revenue for J&J reflect the ORIGINALLY-FILED consolidated total "
+    "Does Trellis's historical revenue for J&J reflect the ORIGINALLY-FILED consolidated total "
     "(including Consumer Health) or an already-restated, continuing-operations-only "
     "figure? Confirmed, with two primary sources, that it is the LATTER -- which is "
     "the right basis for this model, not a data quality problem to work around.\n\n"
@@ -196,7 +183,7 @@ CVR = ContingentValueRight(
         "attributes a $17.7bn 'net of cash acquired' total explicitly to Abiomed (2022's "
         "only material acquisition); netting this file's own upfront-less-cash figure "
         "($17,135mm - $300mm = $16,835mm) against it implies an $865mm CVR fair value. "
-        "CORROBORATING (secondary) basis, per the earlier pass: 0.495 = $792mm/$1,600mm, "
+        "CORROBORATING (secondary) basis: 0.495 = $792mm/$1,600mm, "
         "from the 'Additions' line in J&J's AGGREGATE contingent-consideration "
         "rollforward across ALL acquisitions (sec.gov/Archives/edgar/data/200406/"
         "000020040624000013/jnj-20231231.htm) -- Beginning Balance $533mm (FY2021) -> "
@@ -204,9 +191,9 @@ CVR = ContingentValueRight(
         "name, attributed only by timing and magnitude.\n\n"
         "Both independent triangulations land within 5 points of each other (54.1% vs "
         "49.5%) despite drawing on different disclosures -- convergent, not identical, "
-        "evidence. The newer estimate is used as the point figure because its source "
+        "evidence. The $865mm estimate is used as the point figure because its source "
         "sentence names Abiomed directly and calls the year's other acquisitions "
-        "immaterial, which the older aggregate-rollforward evidence cannot claim. "
+        "immaterial, which the aggregate-rollforward evidence cannot claim. "
         "STILL CIRCUMSTANTIAL, NOT CONFIRMED: neither disclosure states 'the CVR "
         "liability was recognised at $X' in so many words: both are this file's own "
         "arithmetic run backward from a broader disclosed total. J&J's own acquisition-"
@@ -321,15 +308,13 @@ GUIDANCE_2024_ACCRETION_USD = 0.05
 # --- Target fundamentals: sourced from the FY2022 10-K (year ended 31 March 2022) ---
 # All four below are from the SAME filing and tie to each other exactly:
 # 190.560 (pretax) - 54.055 (tax) = 136.505 (net income) -- an internal consistency
-# check the earlier secondary-sourced $1,032mm revenue figure could not offer.
+# check a secondary-sourced revenue figure could not offer.
 
 TARGET_REVENUE_FY2022 = sourced(
     "target_revenue_fy2022_mm", 1_031.753,
     f"Total revenue, fiscal year ended 31 March 2022: $1,031,753 thousand, +21.7% "
-    f"year on year. {ABIOMED_10K_FY2022}. Supersedes an earlier $1,032.0mm figure taken "
-    f"from secondary trade coverage -- the two agree to within $0.25mm, which is itself "
-    f"a useful confirmation the secondary source was reliable, but this is now the "
-    f"primary citation. Note the fiscal year end: this is April 2021 - March 2022, NOT "
+    f"year on year. {ABIOMED_10K_FY2022}. Secondary trade coverage reports $1,032.0mm, "
+    f"within $0.25mm; this primary filing is the citation. Note the fiscal year end: this is April 2021 - March 2022, NOT "
     f"calendar 2022, and must be calendarized onto J&J's December year end (see "
     f"calendarize.py) before any pro-forma combination.")
 
@@ -351,9 +336,9 @@ TARGET_EFFECTIVE_TAX_RATE_FY2022 = sourced(
     f"statutory rate. {ABIOMED_10K_FY2022}. Driven by a $70,066k FOREIGN pretax LOSS "
     f"sitting alongside a $260,626k US pretax GAIN in the geographic split -- foreign "
     f"losses generating no current tax benefit (valuation-allowance territory) push the "
-    f"blended rate up even though consolidated pretax income is positive. Confirms the "
-    f"earlier note that this rate should be read from the footnote, not inferred by "
-    f"dividing a single blended tax line by pretax income at face value.")
+    f"blended rate up even though consolidated pretax income is positive. This rate is "
+    f"read from the footnote, not inferred by dividing a single blended tax line by "
+    f"pretax income at face value.")
 
 # --- J&J's own purchase price allocation, sourced from its own filings -------------
 # J&J's FY2024 10-K carries the FINALISED (post fiscal-2023 measurement-period
@@ -372,9 +357,8 @@ INTANGIBLE_AMORTIZABLE_FV = sourced(
     f"'Amortizable intangible assets for $6.6 billion.' {JNJ_10K_FY2024}. Per "
     f"{JNJ_10Q_Q1_2023}: 'primarily comprised of already in-market products of the "
     f"Impella platform with an average weighted life of 14 years' -- a single bucket, "
-    f"not split by developed-technology/customer-relationship sub-category as this "
-    f"file originally guessed the disclosure would be. Ready to use directly as an "
-    f"`IntangibleClass` input: fair_value=6,600, useful_life_years=14.")
+    f"not split by developed-technology/customer-relationship sub-category. Used "
+    f"directly as an `IntangibleClass` input: fair_value=6,600, useful_life_years=14.")
 
 IPRD_FV = sourced(
     "iprd_fv_mm", 1_100.0,
@@ -382,12 +366,9 @@ IPRD_FV = sourced(
     f"lived, 'valued for technology programs for unapproved products' using "
     f"'probability-adjusted cash flow projections discounted for the risk inherent in "
     f"such projects,' with a probability-of-success factor ranging 52%-70%. NOT "
-    f"amortised (indefinite-lived, tested for impairment like goodwill) -- this file's "
-    f"`IntangibleClass` always amortises over a stated useful life and has no "
-    f"indefinite-lived case. A model run using this figure must either exclude it from "
-    f"`intangibles` (folding it into goodwill, understating goodwill's true share) or "
-    f"treat it as a finite-life class with a placeholder life, flagged clearly as a "
-    f"simplification either way -- stated here rather than discovered at run time.")
+    f"amortised (indefinite-lived, tested for impairment like goodwill): carried as an "
+    f"`IntangibleClass` with useful_life_years=None, so it reduces goodwill but adds no "
+    f"amortisation.")
 
 MARKETABLE_SECURITIES_ACQUIRED = sourced(
     "marketable_securities_acquired_mm", 600.0,
@@ -395,7 +376,7 @@ MARKETABLE_SECURITIES_ACQUIRED = sourced(
     f"{JNJ_10K_FY2024}. Notably smaller than the $1,004.2mm Abiomed itself reported "
     f"holding at 30 June 2022 (TARGET_NET_DEBT above) -- a further, separate gap this "
     f"file does not attempt to close (different measurement dates and classification "
-    f"bases; not investigated further this pass).")
+    f"bases; not investigated further).")
 
 DEFERRED_TAX_LIABILITY_ABIOMED = sourced(
     "deferred_tax_liability_abiomed_mm", 1_800.0,
@@ -415,7 +396,7 @@ TOTAL_LIABILITIES_ASSUMED_ESTIMATE = demonstrated(
     "$156.757mm. This is NOT a single disclosed line from J&J's own PPA table -- it is "
     "this file's sum of two independently sourced figures, presented as a reasoned "
     "estimate (~$1,956.8mm) rather than a primary citation for the total. Cross-checks "
-    "reasonably against the earlier top-down estimate implied by the accounting "
+    "reasonably against the top-down estimate implied by the accounting "
     "identity in ACTUAL_PPA_SOURCE (~$2.2bn using the circumstantial CVR estimate "
     "below) -- the two independent approaches land within ~$250mm of each other.")
 
@@ -454,12 +435,12 @@ ACTUAL_PPA_SOURCE = (
     f"billion (net of $0.3 billion cash acquired), primarily to goodwill for $11.1 "
     f"billion, amortizable intangible assets for $6.6 billion, IPR&D for $1.1 billion, "
     f"marketable securities of $0.6 billion and liabilities [assumed of an amount not "
-    f"captured in this search pass].' {JNJ_10K_FY2024}. The four itemised categories "
+    f"not stated in this summary].' {JNJ_10K_FY2024}. The four itemised categories "
     f"sum to $19.4bn against a stated $20.1bn total -- the ~$0.7bn difference is other "
     f"identifiable assets (receivables, inventory, PP&E) not broken out in this summary "
     f"disclosure. Liabilities assumed and the CVR's specific acquisition-date fair "
-    f"value (distinct from the $1.6bn undiscounted maximum above) were NOT located this "
-    f"pass -- both remain in MISSING.")
+    f"value (distinct from the $1.6bn undiscounted maximum above) are not in this "
+    f"summary; liabilities assumed are estimated below and the CVR fair value is in MISSING.")
 
 PPA_MEASUREMENT_PERIOD_ADJUSTMENT = (
     f"Two different figures for the same fiscal-2023 true-up appear across J&J's own "
@@ -552,8 +533,7 @@ BUYER_FORECAST_BASE_YEAR_RATIONALE = (
     "FY2022 -- the last fiscal year in which Abiomed is not a material part of the "
     "baseline (J&J's FY2022 ended 1 January 2023, ten days AFTER Abiomed closed on "
     "22 December 2022; J&J itself said that stub was immaterial to 2022 results).\n\n"
-    "This corrects a circularity that invalidated an earlier version of this model. "
-    "Forecasting J&J's 'standalone' figures from the latest available base year "
+    "Why not a later base year: forecasting J&J's 'standalone' figures from the latest available base year "
     "(FY2025) uses history in which Abiomed is ALREADY CONSOLIDATED -- J&J's reported "
     "FY2023 onward includes Abiomed's revenue, its earnings, and the purchase "
     "accounting from this very transaction. Adding Abiomed's contribution on top of "
@@ -566,16 +546,15 @@ BUYER_FORECAST_BASE_YEAR_RATIONALE = (
     "means the forecast is a genuine counterfactual projection rather than a "
     "near-term extrapolation -- less accurate as a prediction of what J&J actually "
     "earned, but the only construction that answers the question this model asks.\n\n"
-    "Supersedes the earlier lookback-window analysis in "
-    "BUYER_DRIVER_WINDOW_RATIONALE, which was answering 'what is J&J's forward growth "
+    "This takes precedence over the lookback-window analysis in "
+    "BUYER_DRIVER_WINDOW_RATIONALE, which answers 'what is J&J's forward growth "
     "from today' -- the wrong question for a 2022 deal. With a FY2022 base the "
     "five-year window is FY2018-FY2022 (FY2020 absent, see the Trellis year-gap note), "
     "which sits entirely BEFORE the Kenvue separation, so the exclusion of FY2022-2023 "
     "designed for a FY2025 base does not apply and is not used here.\n\n"
-    "RESOLVED, not merely assumed: an earlier pass flagged as an open question whether "
-    "Trellis's revenue figures for these years are J&J's originally-filed consolidated "
-    "totals or an already-restated continuing-operations basis. Confirmed as the "
-    "latter -- see JNJ_CONTINUING_OPERATIONS_RESTATEMENT for the two primary sources. "
+    "Basis, confirmed rather than assumed: Trellis's revenue figures for these years "
+    "are on J&J's restated continuing-operations basis, not the originally-filed "
+    "consolidated totals -- see JNJ_CONTINUING_OPERATIONS_RESTATEMENT for the two primary sources. "
     "That means every year in this lookback window is measured consistently on the "
     "same (ex-Consumer-Health) basis, which is what makes a growth rate computed "
     "across them meaningful in the first place.")
@@ -623,8 +602,8 @@ TARGET_NORMALISED_OPERATING_INCOME_FY2022 = demonstrated(
     "target_normalised_operating_income_fy2022_mm", 140.720 + 115.986,
     f"$140.720mm reported operating income PLUS the $115.986mm one-time acquired-IPR&D "
     f"charge disclosed in the same statement = $256.706mm normalised. "
-    f"{ABIOMED_10K_FY2022}. Growing the REPORTED figure forward -- as an earlier "
-    f"version of this model did -- projects a permanently depressed earnings base off "
+    f"{ABIOMED_10K_FY2022}. Growing the REPORTED figure forward would project a "
+    f"permanently depressed earnings base off "
     f"a charge that by definition does not recur, understating the target's "
     f"contribution in every forecast year. The charge is sourced in "
     f"TARGET_OPERATING_INCOME_FY2022's own citation; normalising it is a judgment, so "
@@ -651,14 +630,13 @@ MISSING: tuple[Input, ...] = (
               "J&J FY2022 10-K business combination footnote: the specific booked fair "
               "value of the CVR liability at acquisition, at the finest grain J&J "
               "discloses it -- distinct from the $1.6bn undiscounted aggregate maximum "
-              "(ACTUAL_PPA) and from the ~$865mm/0.541 estimate now used for "
+              "(ACTUAL_PPA) and from the ~$865mm/0.541 estimate used for "
               "CVR.probability_weight (see that input's own citation: two convergent "
               "but still circumstantial triangulations, not a verbatim disclosed "
               "figure). Finding this footnote replaces an assumption with a fact and "
               "should be treated as higher priority than its position in this list "
-              "suggests -- though with two independent estimates now converging within "
-              "5 points of each other, the practical stakes of finding it have fallen "
-              "since this item was first opened."),
+              "suggests -- though with two independent estimates converging within "
+              "5 points of each other, the practical stakes of finding it are modest."),
 )
 
 __all__ = [

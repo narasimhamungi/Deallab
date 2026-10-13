@@ -10,7 +10,7 @@ income statements together. The mechanics that matter, in the order they bite:
    (developed technology, customer relationships, tradenames) is amortised through the
    income statement over its useful life. Goodwill is not amortised -- it is tested for
    impairment. This asymmetry is the entire reason GAAP and adjusted EPS diverge in an
-   acquisition, and it is the first thing a technical interviewer asks about.
+   acquisition.
 3. The intangible step-up is generally not deductible for tax in a stock acquisition,
    so a deferred tax liability is recognised at the buyer's tax rate on the step-up.
    The DTL increases the amount allocated away from identifiable net assets, which
@@ -44,12 +44,12 @@ class IntangibleClass:
     associated project is completed (at which point it is reclassified and amortised) or
     abandoned (written off). Until then it is tested for impairment, like goodwill.
 
-    This matters more than it looks. An earlier version of this class could only
-    represent finite-life assets, which forced IPR&D to be either excluded from the
-    allocation entirely -- dumping it into goodwill and overstating goodwill by its full
-    value -- or given an invented finite life, which would create amortisation expense
-    that does not exist and understate earnings every year. Neither is acceptable when
-    the buyer discloses the split: on J&J/Abiomed, IPR&D is $1.1bn of a $17.9bn
+    This matters more than it looks. A class that could only represent finite-life
+    assets would force IPR&D to be either excluded from the allocation entirely --
+    dumping it into goodwill and overstating goodwill by its full value -- or given an
+    invented finite life, creating amortisation expense that does not exist and
+    understating earnings every year. Neither is acceptable when the buyer discloses
+    the split: on J&J/Abiomed, IPR&D is $1.1bn of a $17.9bn
     consideration, so mis-slotting it moves goodwill by 6% of the deal.
     """
     label: str

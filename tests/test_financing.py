@@ -39,7 +39,7 @@ def test_amortising_balance_reaches_zero_and_does_not_go_negative():
 
 def test_advisory_fees_are_expensed_and_kept_apart_from_issuance_costs():
     """ASC 805: deal costs are expensed; debt issuance costs are capitalised. A model
-    that adds banker fees to the purchase price is wrong in an interviewable way."""
+    that adds banker fees to the purchase price is wrong."""
     p = FinancingPlan(
         cash_on_hand_used=sourced("cash", 0.0, CITE),
         foregone_yield=assumed("y", 0.0, CITE),

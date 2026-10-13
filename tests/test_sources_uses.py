@@ -66,13 +66,11 @@ def test_expensed_fees_are_a_use_of_cash_even_though_they_never_touch_goodwill()
 
 
 def test_funding_plan_sized_off_upfront_only_balances_with_cvr_present():
-    """Regression test for a real bug: an earlier orchestration script sized its
-    funding plan off total_equity_purchase_price() (upfront + CVR), then handed that
-    oversized amount to a sources_uses.build() that correctly excludes the CVR from
-    day-one uses (see test_cvr_is_not_funded_at_close_by_default above). The mismatch
-    was exactly the CVR's fair value, and the balance check caught it on the first
-    real-data run. The correct pattern -- funding plan sized off upfront-only -- must
-    balance; sizing off the CVR-inclusive total must NOT."""
+    """A funding plan sized off total_equity_purchase_price() (upfront + CVR) and
+    handed to a sources_uses.build() that excludes the CVR from day-one uses (see
+    test_cvr_is_not_funded_at_close_by_default above) is oversized by exactly the
+    CVR's fair value, and the balance check must catch it. Sized off upfront-only it
+    must balance; sized off the CVR-inclusive total it must NOT."""
     t = terms()
     # this fixture's target has $500mm of net DEBT (not net cash), so it is repaid
     # as a use too -- matching the terms()/plan() pair test_a_correctly_sized_...

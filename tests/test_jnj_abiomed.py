@@ -31,11 +31,10 @@ def test_upfront_consideration_lands_near_the_stated_enterprise_value():
     assert 16_500 < upfront < 17_500
 
 
-def test_target_net_debt_and_book_equity_are_now_sourced():
-    """Both were UNSOURCED in an earlier pass -- both are now pulled from Abiomed's
-    actual 30 June 2022 10-Q, the correct 'last balance sheet before announcement'
-    (the 30 Sept 2022 10-Q this file previously pointed to was filed 3 Nov 2022, two
-    days AFTER the 1 Nov announcement -- not actually available at signing)."""
+def test_target_net_debt_and_book_equity_are_sourced():
+    """Both come from Abiomed's 30 June 2022 10-Q, the last balance sheet public before
+    announcement (the 30 Sept 2022 10-Q was filed 3 Nov 2022, two days AFTER the 1 Nov
+    announcement -- not available at signing)."""
     assert deal.TARGET_NET_DEBT.basis is Basis.SOURCED
     assert deal.TARGET_NET_DEBT.value == pytest.approx(-1_004.197)
     assert deal.TARGET_BOOK_EQUITY.basis is Basis.SOURCED
@@ -95,9 +94,8 @@ def test_the_cvr_probability_weight_is_now_an_assumed_cited_estimate_not_blockin
 
 def test_cvr_weight_rests_on_two_independent_convergent_triangulations():
     """The point estimate (0.541) is grounded in J&J's own FY2024 10-K attributing a
-    $17.7bn acquisition total explicitly to Abiomed; the earlier 0.495 estimate (from
-    an aggregate, not-Abiomed-specific rollforward) is retained as corroboration, not
-    silently discarded. Two independent disclosures landing within 5 points of each
+    $17.7bn acquisition total explicitly to Abiomed; the 0.495 estimate (from an
+    aggregate, not-Abiomed-specific rollforward) is kept as corroboration. Two independent disclosures landing within 5 points of each
     other is real convergent evidence, even though neither states the CVR fair value
     in so many words."""
     citation = deal.CVR.probability_weight.citation
@@ -107,19 +105,18 @@ def test_cvr_weight_rests_on_two_independent_convergent_triangulations():
     assert "primarily included Abiomed" in deal.JNJ_10K_FY2024_ACQUISITION_TOTAL
 
 
-def test_revenue_restatement_question_is_resolved_with_two_primary_sources():
-    """A prior pass left open whether Trellis's historical J&J revenue reflects the
-    originally-filed consolidated total or an already-restated continuing-operations
-    figure. Confirmed as the latter, with J&J's own FY2023 10-K stating the recast
-    directly -- and confirmed as the RIGHT basis for this model, not a problem."""
+def test_revenue_restatement_basis_rests_on_two_primary_sources():
+    """Trellis's historical J&J revenue is the restated continuing-operations figure,
+    not the originally-filed consolidated total, with J&J's own FY2023 10-K stating the
+    recast directly -- the RIGHT basis for this model, not a problem."""
     note = deal.JNJ_CONTINUING_OPERATIONS_RESTATEMENT
     assert "$94,943mm" in note  # the original, as-filed consolidated total
     assert "recast for ALL PERIODS to reflect the continuing operations" in note
-    assert "RESOLVES an open question" in note
+    assert "Confirmed, with two primary sources" in note
 
 
-def test_base_year_rationale_cites_the_resolved_restatement_not_just_the_open_question():
-    assert "RESOLVED, not merely assumed" in deal.BUYER_FORECAST_BASE_YEAR_RATIONALE
+def test_base_year_rationale_cites_the_confirmed_restatement_basis():
+    assert "confirmed rather than assumed" in deal.BUYER_FORECAST_BASE_YEAR_RATIONALE
     assert ("JNJ_CONTINUING_OPERATIONS_RESTATEMENT"
             in deal.BUYER_FORECAST_BASE_YEAR_RATIONALE)
 
@@ -218,8 +215,8 @@ def test_no_placeholder_numbers_exist_in_the_fixture():
 
 
 def test_secondary_sourced_figures_are_flagged_for_verification():
-    """Only the unaffected share price remains secondary -- revenue was upgraded to a
-    primary 10-K citation this pass."""
+    """Only the unaffected share price remains secondary -- revenue carries a primary
+    10-K citation."""
     assert "SECONDARY SOURCE" in deal.TARGET_SHARE_PRICE_UNAFFECTED.citation
     assert "SECONDARY SOURCE" not in deal.TARGET_REVENUE_FY2022.citation
 
@@ -316,10 +313,10 @@ def test_forecast_base_year_predates_the_acquisition_to_avoid_circularity():
     assert "double-counts" in r
 
 
-def test_base_year_rationale_supersedes_the_earlier_window_analysis_explicitly():
-    """The lookback-window work was answering the wrong question for a 2022 deal;
+def test_base_year_rationale_takes_precedence_over_the_window_analysis_explicitly():
+    """The lookback-window analysis answers the wrong question for a 2022 deal;
     saying so beats leaving two contradictory rationales in the file."""
-    assert "Supersedes" in deal.BUYER_FORECAST_BASE_YEAR_RATIONALE
+    assert "takes precedence over" in deal.BUYER_FORECAST_BASE_YEAR_RATIONALE
     assert "BUYER_DRIVER_WINDOW_RATIONALE" in deal.BUYER_FORECAST_BASE_YEAR_RATIONALE
 
 

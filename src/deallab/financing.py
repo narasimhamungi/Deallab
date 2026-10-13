@@ -97,8 +97,7 @@ class FinancingPlan:
         """Advisory/legal/other, expensed as incurred under ASC 805-10-25-23.
 
         These are NOT part of the consideration transferred and do not enter goodwill.
-        Merger models that add banker fees to the purchase price and amortise them are
-        making an error that a technical interviewer will catch in one question.
+        Adding banker fees to the purchase price and amortising them is a basic error.
         """
         total = 0.0
         for f in (self.advisory_fees, self.other_transaction_costs):
